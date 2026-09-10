@@ -4,7 +4,7 @@
 #include<netinet/in.h>
 #include<arpa/inet.h>
 #include<sys/select.h>
-
+#include"ConnectionManager.h"
 int main()
 {
         //1.创建Socket
@@ -46,25 +46,34 @@ int main()
     }
 
         //fd集合
-    fd_set read_fds;
+    fd_set master_fd;
     fd_set now_fds;
-    FD_ZERO(&read_fds);
-    FD_SET(server_fd, &read_fds);
+    FD_ZERO(&master_fd);
+    FD_SET(server_fd, &master_fd);
 
     int client_fd = -1;
     sockaddr_in client_addr{};
-    socklen_t client_len = sizeof(client_addr);
+    
 
     int max_fd = server_fd;
+    ConnectionManager connect_manager;
     while (true)
     {
-        now_fds = read_fds;
+        now_fds = master_fd;
         struct timeval timeout;
         timeout.tv_sec = 5;
         timeout.tv_usec = 0;
 
-        select(max_fd + 1, &now_fds, nullptr, nullptr,&timeout);
+        int n = select(max_fd + 1, &now_fds, nullptr, nullptr, &timeout);
 
+        if(n==-1)
+        {
+            perror("select");
+        }
+        else if(n==0)
+        {
+            std::cout << "select timeout" << std::endl;
+        }
         for (int fd = 0; fd <= max_fd;fd++)
         {
             if(!FD_ISSET(fd,&now_fds))
@@ -73,6 +82,7 @@ int main()
             //判断是否有新客户端连接
             else if (fd==server_fd)
             {
+                socklen_t client_len = sizeof(client_addr);
                 client_fd = accept(server_fd, (sockaddr *)&client_addr, &client_len);
                 if (client_fd == -1)
                 {
@@ -80,7 +90,11 @@ int main()
                     close(server_fd);
                     return 1;
                 }
-                FD_SET(client_fd, &read_fds);
+
+                FD_SET(client_fd, &master_fd);
+
+                
+                connect_manager.add_connection(client_fd);
 
                 if (client_fd > max_fd)
                     max_fd = client_fd;
@@ -89,38 +103,23 @@ int main()
             //客户端传输数据
             else{
 
-                char buffer[1024]{};
+                Connection *client = connect_manager.get_connection(fd);
 
-                int n = recv(fd, buffer, sizeof(buffer) - 1, 0);
+                if(client==nullptr)
+                continue;
 
-                if (n == -1)
+                bool check = client->recv_data();
+                if(!check)
                 {
-                    perror("recv");
+                    connect_manager.delete_connection(fd);
+                    FD_CLR(fd, &master_fd);
                     close(fd);
-                    
-                    return 1;
-                }
-                else if(n==0)
-                {
-                    std::cout << "client close" << std::endl;
-                    close(fd);
-                    FD_CLR(fd, &read_fds);
                     continue;
                 }
-                // 10.返回数据
-                int send_n = send(fd, buffer, n, 0);
-                if (send_n == -1)
-                {
-                    perror("send");
-                    close(fd);
 
-                    return 1;
-                }
-                std::cout << "recv bytes = " << n << std::endl;
-                std::cout << "recv data = " << buffer << std::endl;
-                std::cout << "send bytes = " << send_n << std::endl;
-               
-               
+                std::cout << "success recv" << std::endl;
+                client->send_data();
+                
             }
 
         }

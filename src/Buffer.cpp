@@ -3,10 +3,10 @@
     void Buffer::add_data(const char *data, size_t len)
 
     {
-    if(data==nullptr||len==0)
+        if(data==nullptr||len==0)
         return;
 
-    buffer_.insert(buffer_.end(), data, data + len);
+        buffer_.insert(buffer_.end(), data, data + len);
 
     }
 
@@ -31,4 +31,4 @@
         return buffer_.data() + read_index_;
     }
 
-    // 核心实现并不是每次读取数据后从头删除数据 而是定义一个read_index指针表示已读数据的位置，好处就是避免频繁移动和拷贝剩余数据的情况，读写可以解耦，提高 Buffer 的读写效率，同时更适合网络数据分批到达的场景
+    // 核心实现将Buffer包装，方便Buffer内数据的读取和写入，并不是每次读取数据后从头删除数据 而是定义一个read_index指针表示已读数据的位置，好处就是避免频繁移动和拷贝剩余数据的情况，读写可以解耦，提高 Buffer 的读写效率，同时更适合网络数据分批到达的场景
