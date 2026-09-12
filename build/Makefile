@@ -201,6 +201,30 @@ src/ConnectionManager.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/ConnectionManager.cpp.s
 .PHONY : src/ConnectionManager.cpp.s
 
+src/EventLoop.o: src/EventLoop.cpp.o
+.PHONY : src/EventLoop.o
+
+# target to build an object file
+src/EventLoop.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/EventLoop.cpp.o
+.PHONY : src/EventLoop.cpp.o
+
+src/EventLoop.i: src/EventLoop.cpp.i
+.PHONY : src/EventLoop.i
+
+# target to preprocess a source file
+src/EventLoop.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/EventLoop.cpp.i
+.PHONY : src/EventLoop.cpp.i
+
+src/EventLoop.s: src/EventLoop.cpp.s
+.PHONY : src/EventLoop.s
+
+# target to generate assembly for a file
+src/EventLoop.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/EventLoop.cpp.s
+.PHONY : src/EventLoop.cpp.s
+
 src/SelectPoller.o: src/SelectPoller.cpp.o
 .PHONY : src/SelectPoller.o
 
@@ -291,6 +315,9 @@ help:
 	@echo "... src/ConnectionManager.o"
 	@echo "... src/ConnectionManager.i"
 	@echo "... src/ConnectionManager.s"
+	@echo "... src/EventLoop.o"
+	@echo "... src/EventLoop.i"
+	@echo "... src/EventLoop.s"
 	@echo "... src/SelectPoller.o"
 	@echo "... src/SelectPoller.i"
 	@echo "... src/SelectPoller.s"

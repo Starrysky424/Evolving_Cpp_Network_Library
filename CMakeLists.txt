@@ -15,6 +15,7 @@ set(
     src/ConnectionManager.cpp
     src/SocketListener.cpp
     src/SelectPoller.cpp
+    src/EventLoop.cpp
 )
 
 add_executable(main ${SOURCES})

@@ -1,5 +1,4 @@
 2026年9月10日
-
 今日进度：
 
 1. 添加 Buffer.h / Buffer.cpp
@@ -24,3 +23,29 @@
 
 今日理解：
 select 负责“发现哪个客户端有事件”，ConnectionManager 负责“找到哪个客户端对象”，Connection 负责“处理这个客户端的数据”。
+
+
+
+2026年9月12日
+今日进度
+1. 封装 SocketListener
+   - 添加 SocketListener.h / SocketListener.cpp
+   - 封装 socket → bind → listen 服务器初始化流程。
+2. 封装 SelectPoller
+   - 添加 SelectPoller.h / SelectPoller.cpp
+   - 封装 select() 多路 I/O 复用机制。
+   - 管理监听 fd、就绪 fd 以及 select() 超时。
+3. 引入 EventLoop
+   - 添加 EventLoop.h / EventLoop.cpp
+   - 封装服务器事件循环。
+   - 将新客户端连接处理和客户端数据处理从 main() 中拆分出来。
+4. 实现模块解耦
+   - SocketListener：负责服务器 Socket 初始化
+   - SelectPoller：负责 I/O 多路复用
+   - ConnectionManager：负责连接管理
+   - Connection：负责客户端数据收发
+   - EventLoop：负责事件循环与事件分发
+
+今日收获
+
+将原本集中在 main() 中的网络代码进行模块化拆分，使各模块职责更加清晰，为后续替换 select、引入其他 I/O 多路复用模型以及进一步完善网络库架构打下基础。

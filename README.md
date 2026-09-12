@@ -77,29 +77,115 @@ close
 
 ---
 
-### Stage 2：select + 网络库基础抽象
+### Stage 2：引入 Select 并完成网络库初步模块化
 
-针对 Stage 1 中“一个客户端可能阻塞整个服务器”的问题，引入 I/O 多路复用。
+**阶段目标：**
+将第一阶段的阻塞式 TCP Server 改造成基于 `select` 的 I/O 多路复用模型，并对 Socket、连接管理、I/O 多路复用、事件循环等功能进行模块化封装。
 
-核心技术：
+**主要完成内容：**
 
-- select
-- I/O 多路复用
-- 非阻塞 Socket
-- Buffer
-- Connection
-- ConnectionManager
-- Poller
-- EventLoop
-- 回调函数
+1. **引入 select**
 
-主要目标：
+   * 使用 `select()` 监听多个文件描述符
+   * 实现服务器同时处理多个客户端连接
+   * 理解 `fd_set`、`FD_SET`、`FD_ISSET`、`FD_ZERO`
+   * 理解 `select()` 返回值：
 
-> 一个线程同时管理多个客户端连接，并逐步将 Echo Server 抽象为一个基础网络库。
+     * `> 0`：有文件描述符就绪
+     * `= 0`：超时
+     * `< 0`：发生错误
+
+2. **Buffer**
+
+   * 对客户端接收的数据进行缓冲
+   * 引入 `read_index` 等概念
+   * 将网络 I/O 与数据存储进行一定程度的分离
+
+3. **Connection**
+
+   * 封装单个客户端连接
+   * 将 `recv()`、`send()` 等操作封装到 `Connection` 类中
+   * 统一管理客户端 fd 和通信数据
+
+4. **ConnectionManager**
+
+   * 统一管理多个 `Connection`
+   * 实现客户端连接的创建、查找和管理
+   * 为后续多连接网络库提供基础
+
+5. **SocketListener**
+
+   * 封装 `socket → bind → listen` 流程
+   * 对外提供监听 Socket
+   * 降低上层代码对底层 Socket API 的依赖
+
+6. **SelectPoller**
+
+   * 封装 `select()` 相关逻辑
+   * 负责管理监听的文件描述符集合
+   * 将 I/O 多路复用机制从业务逻辑中独立出来
+
+7. **EventLoop**
+
+   * 封装网络事件循环
+   * 负责：
+
+     * 监听新客户端连接
+     * 检测已有客户端是否有数据
+     * 分发对应事件
+   * 开始形成“事件驱动”的网络库结构
+
+**第二阶段最终结构：**
+
+```text
+             EventLoop
+                 │
+        ┌────────┴────────┐
+        │                 │
+ SocketListener      SelectPoller
+        │                 │
+ socket/bind/listen    select()
+        │                 │
+        └────────┬────────┘
+                 │
+        ConnectionManager
+                 │
+        ┌────────┼────────┐
+        │        │        │
+   Connection Connection Connection
+        │        │        │
+      Buffer   Buffer   Buffer
+```
+
+**阶段核心理解：**
+
+第二阶段：
+
+```text
+SocketListener
+       ↓
+   EventLoop
+       ↓
+ SelectPoller
+       ↓
+select() 监听多个 fd
+       ↓
+ConnectionManager
+       ↓
+多个 Connection
+       ↓
+Buffer
+```
+
+**阶段总结：**
+
+第二阶段的核心不是简单学习 `select()`，而是完成了从 **“能运行的 TCP Server” → “具有基本网络库结构的 Server”** 的转变。
+
+通过 `SocketListener`、`SelectPoller`、`ConnectionManager`、`Connection`、`Buffer`、`EventLoop` 等模块，将底层网络操作逐步拆分，为后续实现更高级的网络模型（如 `epoll`）、线程池以及高性能网络库打下基础。
 
 ---
 
-### Stage 3：epoll + 多线程
+### Stage 3：epoll + 多线程（未实现）
 
 针对 select 在大量连接场景下的性能和使用限制，引入 Linux 下更加高效的 epoll。
 
