@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/starrysky/EvolingCNetworkLibrary
+CMAKE_SOURCE_DIR = /home/starrysky/evolvingcnetworklibrary
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/starrysky/EvolingCNetworkLibrary/build
+CMAKE_BINARY_DIR = /home/starrysky/evolvingcnetworklibrary/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/starrysky/EvolingCNetworkLibrary/build/CMakeFiles /home/starrysky/EvolingCNetworkLibrary/build//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/starrysky/evolvingcnetworklibrary/build/CMakeFiles /home/starrysky/evolvingcnetworklibrary/build//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/starrysky/EvolingCNetworkLibrary/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/starrysky/evolvingcnetworklibrary/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -201,6 +201,54 @@ src/ConnectionManager.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/ConnectionManager.cpp.s
 .PHONY : src/ConnectionManager.cpp.s
 
+src/SelectPoller.o: src/SelectPoller.cpp.o
+.PHONY : src/SelectPoller.o
+
+# target to build an object file
+src/SelectPoller.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/SelectPoller.cpp.o
+.PHONY : src/SelectPoller.cpp.o
+
+src/SelectPoller.i: src/SelectPoller.cpp.i
+.PHONY : src/SelectPoller.i
+
+# target to preprocess a source file
+src/SelectPoller.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/SelectPoller.cpp.i
+.PHONY : src/SelectPoller.cpp.i
+
+src/SelectPoller.s: src/SelectPoller.cpp.s
+.PHONY : src/SelectPoller.s
+
+# target to generate assembly for a file
+src/SelectPoller.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/SelectPoller.cpp.s
+.PHONY : src/SelectPoller.cpp.s
+
+src/SocketListener.o: src/SocketListener.cpp.o
+.PHONY : src/SocketListener.o
+
+# target to build an object file
+src/SocketListener.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/SocketListener.cpp.o
+.PHONY : src/SocketListener.cpp.o
+
+src/SocketListener.i: src/SocketListener.cpp.i
+.PHONY : src/SocketListener.i
+
+# target to preprocess a source file
+src/SocketListener.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/SocketListener.cpp.i
+.PHONY : src/SocketListener.cpp.i
+
+src/SocketListener.s: src/SocketListener.cpp.s
+.PHONY : src/SocketListener.s
+
+# target to generate assembly for a file
+src/SocketListener.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/SocketListener.cpp.s
+.PHONY : src/SocketListener.cpp.s
+
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
 
@@ -243,6 +291,12 @@ help:
 	@echo "... src/ConnectionManager.o"
 	@echo "... src/ConnectionManager.i"
 	@echo "... src/ConnectionManager.s"
+	@echo "... src/SelectPoller.o"
+	@echo "... src/SelectPoller.i"
+	@echo "... src/SelectPoller.s"
+	@echo "... src/SocketListener.o"
+	@echo "... src/SocketListener.i"
+	@echo "... src/SocketListener.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

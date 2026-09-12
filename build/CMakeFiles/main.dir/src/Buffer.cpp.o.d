@@ -1,7 +1,7 @@
 CMakeFiles/main.dir/src/Buffer.cpp.o: \
- /home/starrysky/EvolingCNetworkLibrary/src/Buffer.cpp \
+ /home/starrysky/evolvingcnetworklibrary/src/Buffer.cpp \
  /usr/include/stdc-predef.h \
- /home/starrysky/EvolingCNetworkLibrary/include/Buffer.h \
+ /home/starrysky/evolvingcnetworklibrary/include/Buffer.h \
  /usr/include/c++/11/vector /usr/include/c++/11/bits/stl_algobase.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \

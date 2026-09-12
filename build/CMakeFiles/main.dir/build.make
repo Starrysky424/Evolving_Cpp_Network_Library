@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/starrysky/EvolingCNetworkLibrary
+CMAKE_SOURCE_DIR = /home/starrysky/evolvingcnetworklibrary
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/starrysky/EvolingCNetworkLibrary/build
+CMAKE_BINARY_DIR = /home/starrysky/evolvingcnetworklibrary/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/main.dir/depend.make
@@ -72,65 +72,95 @@ include CMakeFiles/main.dir/flags.make
 CMakeFiles/main.dir/src/main.cpp.o: CMakeFiles/main.dir/flags.make
 CMakeFiles/main.dir/src/main.cpp.o: ../src/main.cpp
 CMakeFiles/main.dir/src/main.cpp.o: CMakeFiles/main.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/starrysky/EvolingCNetworkLibrary/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/main.dir/src/main.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/src/main.cpp.o -MF CMakeFiles/main.dir/src/main.cpp.o.d -o CMakeFiles/main.dir/src/main.cpp.o -c /home/starrysky/EvolingCNetworkLibrary/src/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/starrysky/evolvingcnetworklibrary/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/main.dir/src/main.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/src/main.cpp.o -MF CMakeFiles/main.dir/src/main.cpp.o.d -o CMakeFiles/main.dir/src/main.cpp.o -c /home/starrysky/evolvingcnetworklibrary/src/main.cpp
 
 CMakeFiles/main.dir/src/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/main.dir/src/main.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/starrysky/EvolingCNetworkLibrary/src/main.cpp > CMakeFiles/main.dir/src/main.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/starrysky/evolvingcnetworklibrary/src/main.cpp > CMakeFiles/main.dir/src/main.cpp.i
 
 CMakeFiles/main.dir/src/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/main.dir/src/main.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/starrysky/EvolingCNetworkLibrary/src/main.cpp -o CMakeFiles/main.dir/src/main.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/starrysky/evolvingcnetworklibrary/src/main.cpp -o CMakeFiles/main.dir/src/main.cpp.s
 
 CMakeFiles/main.dir/src/Buffer.cpp.o: CMakeFiles/main.dir/flags.make
 CMakeFiles/main.dir/src/Buffer.cpp.o: ../src/Buffer.cpp
 CMakeFiles/main.dir/src/Buffer.cpp.o: CMakeFiles/main.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/starrysky/EvolingCNetworkLibrary/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/main.dir/src/Buffer.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/src/Buffer.cpp.o -MF CMakeFiles/main.dir/src/Buffer.cpp.o.d -o CMakeFiles/main.dir/src/Buffer.cpp.o -c /home/starrysky/EvolingCNetworkLibrary/src/Buffer.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/starrysky/evolvingcnetworklibrary/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/main.dir/src/Buffer.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/src/Buffer.cpp.o -MF CMakeFiles/main.dir/src/Buffer.cpp.o.d -o CMakeFiles/main.dir/src/Buffer.cpp.o -c /home/starrysky/evolvingcnetworklibrary/src/Buffer.cpp
 
 CMakeFiles/main.dir/src/Buffer.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/main.dir/src/Buffer.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/starrysky/EvolingCNetworkLibrary/src/Buffer.cpp > CMakeFiles/main.dir/src/Buffer.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/starrysky/evolvingcnetworklibrary/src/Buffer.cpp > CMakeFiles/main.dir/src/Buffer.cpp.i
 
 CMakeFiles/main.dir/src/Buffer.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/main.dir/src/Buffer.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/starrysky/EvolingCNetworkLibrary/src/Buffer.cpp -o CMakeFiles/main.dir/src/Buffer.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/starrysky/evolvingcnetworklibrary/src/Buffer.cpp -o CMakeFiles/main.dir/src/Buffer.cpp.s
 
 CMakeFiles/main.dir/src/Connection.cpp.o: CMakeFiles/main.dir/flags.make
 CMakeFiles/main.dir/src/Connection.cpp.o: ../src/Connection.cpp
 CMakeFiles/main.dir/src/Connection.cpp.o: CMakeFiles/main.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/starrysky/EvolingCNetworkLibrary/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/main.dir/src/Connection.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/src/Connection.cpp.o -MF CMakeFiles/main.dir/src/Connection.cpp.o.d -o CMakeFiles/main.dir/src/Connection.cpp.o -c /home/starrysky/EvolingCNetworkLibrary/src/Connection.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/starrysky/evolvingcnetworklibrary/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/main.dir/src/Connection.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/src/Connection.cpp.o -MF CMakeFiles/main.dir/src/Connection.cpp.o.d -o CMakeFiles/main.dir/src/Connection.cpp.o -c /home/starrysky/evolvingcnetworklibrary/src/Connection.cpp
 
 CMakeFiles/main.dir/src/Connection.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/main.dir/src/Connection.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/starrysky/EvolingCNetworkLibrary/src/Connection.cpp > CMakeFiles/main.dir/src/Connection.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/starrysky/evolvingcnetworklibrary/src/Connection.cpp > CMakeFiles/main.dir/src/Connection.cpp.i
 
 CMakeFiles/main.dir/src/Connection.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/main.dir/src/Connection.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/starrysky/EvolingCNetworkLibrary/src/Connection.cpp -o CMakeFiles/main.dir/src/Connection.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/starrysky/evolvingcnetworklibrary/src/Connection.cpp -o CMakeFiles/main.dir/src/Connection.cpp.s
 
 CMakeFiles/main.dir/src/ConnectionManager.cpp.o: CMakeFiles/main.dir/flags.make
 CMakeFiles/main.dir/src/ConnectionManager.cpp.o: ../src/ConnectionManager.cpp
 CMakeFiles/main.dir/src/ConnectionManager.cpp.o: CMakeFiles/main.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/starrysky/EvolingCNetworkLibrary/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/main.dir/src/ConnectionManager.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/src/ConnectionManager.cpp.o -MF CMakeFiles/main.dir/src/ConnectionManager.cpp.o.d -o CMakeFiles/main.dir/src/ConnectionManager.cpp.o -c /home/starrysky/EvolingCNetworkLibrary/src/ConnectionManager.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/starrysky/evolvingcnetworklibrary/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/main.dir/src/ConnectionManager.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/src/ConnectionManager.cpp.o -MF CMakeFiles/main.dir/src/ConnectionManager.cpp.o.d -o CMakeFiles/main.dir/src/ConnectionManager.cpp.o -c /home/starrysky/evolvingcnetworklibrary/src/ConnectionManager.cpp
 
 CMakeFiles/main.dir/src/ConnectionManager.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/main.dir/src/ConnectionManager.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/starrysky/EvolingCNetworkLibrary/src/ConnectionManager.cpp > CMakeFiles/main.dir/src/ConnectionManager.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/starrysky/evolvingcnetworklibrary/src/ConnectionManager.cpp > CMakeFiles/main.dir/src/ConnectionManager.cpp.i
 
 CMakeFiles/main.dir/src/ConnectionManager.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/main.dir/src/ConnectionManager.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/starrysky/EvolingCNetworkLibrary/src/ConnectionManager.cpp -o CMakeFiles/main.dir/src/ConnectionManager.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/starrysky/evolvingcnetworklibrary/src/ConnectionManager.cpp -o CMakeFiles/main.dir/src/ConnectionManager.cpp.s
+
+CMakeFiles/main.dir/src/SocketListener.cpp.o: CMakeFiles/main.dir/flags.make
+CMakeFiles/main.dir/src/SocketListener.cpp.o: ../src/SocketListener.cpp
+CMakeFiles/main.dir/src/SocketListener.cpp.o: CMakeFiles/main.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/starrysky/evolvingcnetworklibrary/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/main.dir/src/SocketListener.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/src/SocketListener.cpp.o -MF CMakeFiles/main.dir/src/SocketListener.cpp.o.d -o CMakeFiles/main.dir/src/SocketListener.cpp.o -c /home/starrysky/evolvingcnetworklibrary/src/SocketListener.cpp
+
+CMakeFiles/main.dir/src/SocketListener.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/main.dir/src/SocketListener.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/starrysky/evolvingcnetworklibrary/src/SocketListener.cpp > CMakeFiles/main.dir/src/SocketListener.cpp.i
+
+CMakeFiles/main.dir/src/SocketListener.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/main.dir/src/SocketListener.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/starrysky/evolvingcnetworklibrary/src/SocketListener.cpp -o CMakeFiles/main.dir/src/SocketListener.cpp.s
+
+CMakeFiles/main.dir/src/SelectPoller.cpp.o: CMakeFiles/main.dir/flags.make
+CMakeFiles/main.dir/src/SelectPoller.cpp.o: ../src/SelectPoller.cpp
+CMakeFiles/main.dir/src/SelectPoller.cpp.o: CMakeFiles/main.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/starrysky/evolvingcnetworklibrary/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/main.dir/src/SelectPoller.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/src/SelectPoller.cpp.o -MF CMakeFiles/main.dir/src/SelectPoller.cpp.o.d -o CMakeFiles/main.dir/src/SelectPoller.cpp.o -c /home/starrysky/evolvingcnetworklibrary/src/SelectPoller.cpp
+
+CMakeFiles/main.dir/src/SelectPoller.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/main.dir/src/SelectPoller.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/starrysky/evolvingcnetworklibrary/src/SelectPoller.cpp > CMakeFiles/main.dir/src/SelectPoller.cpp.i
+
+CMakeFiles/main.dir/src/SelectPoller.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/main.dir/src/SelectPoller.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/starrysky/evolvingcnetworklibrary/src/SelectPoller.cpp -o CMakeFiles/main.dir/src/SelectPoller.cpp.s
 
 # Object files for target main
 main_OBJECTS = \
 "CMakeFiles/main.dir/src/main.cpp.o" \
 "CMakeFiles/main.dir/src/Buffer.cpp.o" \
 "CMakeFiles/main.dir/src/Connection.cpp.o" \
-"CMakeFiles/main.dir/src/ConnectionManager.cpp.o"
+"CMakeFiles/main.dir/src/ConnectionManager.cpp.o" \
+"CMakeFiles/main.dir/src/SocketListener.cpp.o" \
+"CMakeFiles/main.dir/src/SelectPoller.cpp.o"
 
 # External object files for target main
 main_EXTERNAL_OBJECTS =
@@ -139,9 +169,11 @@ main: CMakeFiles/main.dir/src/main.cpp.o
 main: CMakeFiles/main.dir/src/Buffer.cpp.o
 main: CMakeFiles/main.dir/src/Connection.cpp.o
 main: CMakeFiles/main.dir/src/ConnectionManager.cpp.o
+main: CMakeFiles/main.dir/src/SocketListener.cpp.o
+main: CMakeFiles/main.dir/src/SelectPoller.cpp.o
 main: CMakeFiles/main.dir/build.make
 main: CMakeFiles/main.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/starrysky/EvolingCNetworkLibrary/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable main"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/starrysky/evolvingcnetworklibrary/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Linking CXX executable main"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/main.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -153,6 +185,6 @@ CMakeFiles/main.dir/clean:
 .PHONY : CMakeFiles/main.dir/clean
 
 CMakeFiles/main.dir/depend:
-	cd /home/starrysky/EvolingCNetworkLibrary/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/starrysky/EvolingCNetworkLibrary /home/starrysky/EvolingCNetworkLibrary /home/starrysky/EvolingCNetworkLibrary/build /home/starrysky/EvolingCNetworkLibrary/build /home/starrysky/EvolingCNetworkLibrary/build/CMakeFiles/main.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/starrysky/evolvingcnetworklibrary/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/starrysky/evolvingcnetworklibrary /home/starrysky/evolvingcnetworklibrary /home/starrysky/evolvingcnetworklibrary/build /home/starrysky/evolvingcnetworklibrary/build /home/starrysky/evolvingcnetworklibrary/build/CMakeFiles/main.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/main.dir/depend
 

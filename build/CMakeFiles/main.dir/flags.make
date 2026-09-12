@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/starrysky/EvolingCNetworkLibrary/include
+CXX_INCLUDES = -I/home/starrysky/evolvingcnetworklibrary/include
 
 CXX_FLAGS = 
 

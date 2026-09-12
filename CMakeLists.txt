@@ -13,6 +13,8 @@ set(
     src/Buffer.cpp
     src/Connection.cpp
     src/ConnectionManager.cpp
+    src/SocketListener.cpp
+    src/SelectPoller.cpp
 )
 
 add_executable(main ${SOURCES})
