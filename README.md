@@ -45,19 +45,7 @@
 
 核心流程：
 
-socket
-↓
-bind
-↓
-listen
-↓
-accept
-↓
-recv
-↓
-send
-↓
-close
+socket -> bind -> listen -> accept -> recv -> send -> close
 
 主要学习：
 

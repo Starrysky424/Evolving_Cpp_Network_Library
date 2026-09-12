@@ -31,14 +31,15 @@ void SelectPoller:: remove_fd(int fd)
     
     if(fd==max_fd_)
     {
-        max_fd_ = -1;
-        for (int i = 0; i < FD_SETSIZE;i++)
+        for (int i = max_fd_ - 1; i >= 0;i--)
         {
             if(FD_ISSET(i,&master_fds_))
             {
                 max_fd_ = i;
+                return;
             }
         }
+        max_fd_ = -1;
     }
 }
 
