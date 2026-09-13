@@ -10,7 +10,18 @@ int main()
     SocketListener socketListener("127.0.0.1", 8080);
 
     EventLoop eventLoop(socketListener.fd());
-    
+    eventLoop.set_message_callback(
+        [](Connection &connection, Buffer &buffer)
+        {
+            std::string msg(
+                buffer.get(),
+                buffer.read_able_bytes());
+
+            std::cout << "recv:" << msg << std::endl;
+
+            buffer.fetch(
+                buffer.read_able_bytes());
+        });
     eventLoop.run();
     return 0;
 }

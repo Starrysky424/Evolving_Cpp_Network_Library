@@ -2,12 +2,13 @@
 #include<sys/socket.h>
 #include<unistd.h>
 #include<iostream>
+
     //构造函数
     Connection::Connection(int fd)
         : fd_(fd)
         {}
 
-    bool Connection::recv_data()
+    IOEvent Connection::recv_data()
     {
         char buffer[1024]{};
         int len = recv(fd_, buffer, sizeof(buffer) - 1, 0);
@@ -15,17 +16,17 @@
         if(len>0)
         {
             input_buffer_.add_data(buffer, len);
-            return true;
+            return IOEvent::DATA;
         }
 
         else if(len==0)
         {
             std::cout << "close client" << std::endl;
-            return false;
+            return IOEvent::CLOSE;
         }
 
         perror("recv");
-        return false;
+        return IOEvent::ERROR;
     }
 
     bool Connection:: send_data()

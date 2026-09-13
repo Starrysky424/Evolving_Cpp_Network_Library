@@ -67,112 +67,296 @@ socket -> bind -> listen -> accept -> recv -> send -> close
 
 ### Stage 2：引入 Select 并完成网络库初步模块化
 
-**阶段目标：**
+## 阶段目标：
+
 将第一阶段的阻塞式 TCP Server 改造成基于 `select` 的 I/O 多路复用模型，并对 Socket、连接管理、I/O 多路复用、事件循环等功能进行模块化封装。
-
-**主要完成内容：**
-
-1. **引入 select**
-
-   * 使用 `select()` 监听多个文件描述符
-   * 实现服务器同时处理多个客户端连接
-   * 理解 `fd_set`、`FD_SET`、`FD_ISSET`、`FD_ZERO`
-   * 理解 `select()` 返回值：
-
-     * `> 0`：有文件描述符就绪
-     * `= 0`：超时
-     * `< 0`：发生错误
-
-2. **Buffer**
-
-   * 对客户端接收的数据进行缓冲
-   * 引入 `read_index` 等概念
-   * 将网络 I/O 与数据存储进行一定程度的分离
-
-3. **Connection**
-
-   * 封装单个客户端连接
-   * 将 `recv()`、`send()` 等操作封装到 `Connection` 类中
-   * 统一管理客户端 fd 和通信数据
-
-4. **ConnectionManager**
-
-   * 统一管理多个 `Connection`
-   * 实现客户端连接的创建、查找和管理
-   * 为后续多连接网络库提供基础
-
-5. **SocketListener**
-
-   * 封装 `socket → bind → listen` 流程
-   * 对外提供监听 Socket
-   * 降低上层代码对底层 Socket API 的依赖
-
-6. **SelectPoller**
-
-   * 封装 `select()` 相关逻辑
-   * 负责管理监听的文件描述符集合
-   * 将 I/O 多路复用机制从业务逻辑中独立出来
-
-7. **EventLoop**
-
-   * 封装网络事件循环
-   * 负责：
-
-     * 监听新客户端连接
-     * 检测已有客户端是否有数据
-     * 分发对应事件
-   * 开始形成“事件驱动”的网络库结构
-
-**第二阶段最终结构：**
-
-```text
-             EventLoop
-                 │
-        ┌────────┴────────┐
-        │                 │
- SocketListener      SelectPoller
-        │                 │
- socket/bind/listen    select()
-        │                 │
-        └────────┬────────┘
-                 │
-        ConnectionManager
-                 │
-        ┌────────┼────────┐
-        │        │        │
-   Connection Connection Connection
-        │        │        │
-      Buffer   Buffer   Buffer
-```
-
-**阶段核心理解：**
-
-第二阶段：
-
-```text
-SocketListener
-       ↓
-   EventLoop
-       ↓
- SelectPoller
-       ↓
-select() 监听多个 fd
-       ↓
-ConnectionManager
-       ↓
-多个 Connection
-       ↓
-Buffer
-```
-
-**阶段总结：**
-
-第二阶段的核心不是简单学习 `select()`，而是完成了从 **“能运行的 TCP Server” → “具有基本网络库结构的 Server”** 的转变。
-
-通过 `SocketListener`、`SelectPoller`、`ConnectionManager`、`Connection`、`Buffer`、`EventLoop` 等模块，将底层网络操作逐步拆分，为后续实现更高级的网络模型（如 `epoll`）、线程池以及高性能网络库打下基础。
 
 ---
 
+## 主要完成内容：
+
+### 1. 引入 select
+
+- 使用 `select()` 监听多个文件描述符
+- 实现服务器同时处理多个客户端连接
+- 理解 `fd_set`、`FD_SET`、`FD_ISSET`、`FD_ZERO`
+- 理解 `select()` 返回值：
+
+  - `>0`：有文件描述符就绪
+  - `=0`：超时
+  - `<0`：发生错误
+
+
+---
+
+### 2. Buffer
+
+- 对客户端接收的数据进行缓冲
+- 引入 `read_index` 管理已读取数据
+- 将网络 I/O 与数据存储进行分离
+- 为后续协议解析提供基础
+
+
+---
+
+### 3. Connection
+
+- 封装单个客户端连接
+- 将 `recv()`、`send()` 等操作封装到 `Connection` 类中
+- 统一管理客户端 fd 和通信数据
+
+结构：
+
+```
+Connection
+
+    |
+    |-- fd
+
+    |-- Buffer
+
+    |-- recv_data()
+
+    |-- send_data()
+```
+
+
+---
+
+### 4. ConnectionManager
+
+- 统一管理多个 `Connection`
+- 实现客户端连接的创建、查找和删除
+- 管理 Connection 生命周期
+
+
+---
+
+### 5. SocketListener
+
+- 封装：
+
+```
+socket → bind → listen
+```
+
+- 对外提供监听 Socket
+- 降低上层代码对 Socket API 的依赖
+
+
+---
+
+### 6. SelectPoller
+
+- 封装 `select()` 相关逻辑
+- 管理监听的文件描述符集合
+- 将 I/O 多路复用逻辑与业务代码分离
+
+为后续替换：
+
+```
+select
+
+↓
+
+epoll
+```
+
+提供基础。
+
+
+---
+
+### 7. EventLoop
+
+- 封装网络事件循环
+- 负责：
+
+  - 监听新客户端连接
+  - 检测客户端数据事件
+  - 分发对应事件
+
+
+开始形成事件驱动网络结构。
+
+
+---
+
+### 8. IOEvent事件抽象
+
+将原来的简单返回值：
+
+```
+成功 / 失败
+```
+
+升级为：
+
+```cpp
+DATA
+CLOSE
+ERROR
+```
+
+用于区分：
+
+- 收到数据
+- 客户端关闭
+- 网络错误
+
+
+---
+
+### 9. Callback网络层与业务层解耦
+
+引入：
+
+```cpp
+std::function<void(Connection*)>
+```
+
+实现：
+
+```
+EventLoop
+
+      ↓
+
+Connection
+
+      ↓
+
+Callback
+
+      ↓
+
+业务处理
+```
+
+使网络层负责连接管理，业务层负责具体请求处理。
+
+
+---
+
+## 第二阶段最终结构：
+
+```
+             EventLoop
+
+                 │
+
+      ┌──────────┴──────────┐
+
+      │                     │
+
+SocketListener       SelectPoller
+
+      │                     │
+
+socket/bind/listen      select()
+
+      │                     │
+
+      └──────────┬──────────┘
+
+                 │
+
+        ConnectionManager
+
+                 │
+
+      ┌──────────┼──────────┐
+
+      │          │          │
+
+ Connection Connection Connection
+
+      │          │          │
+
+ Buffer      Buffer      Buffer
+
+```
+
+---
+
+## 阶段核心理解：
+
+第二阶段：
+
+```
+SocketListener
+
+        ↓
+
+EventLoop
+
+        ↓
+
+SelectPoller
+
+        ↓
+
+select()监听多个fd
+
+        ↓
+
+ConnectionManager
+
+        ↓
+
+多个Connection
+
+        ↓
+
+Buffer
+
+        ↓
+
+Callback
+
+        ↓
+
+业务处理
+```
+
+完成了：
+
+```
+简单TCP Server
+
+        ↓
+
+模块化网络Server
+```
+
+的转变。
+
+---
+
+## 当前模型存在的问题：
+
+select模型仍存在限制：
+
+- fd数量受 `FD_SETSIZE` 限制
+- 每次需要遍历所有fd
+- fd集合需要复制，存在额外开销
+
+
+下一阶段将进行：
+
+```
+select
+
+↓
+
+epoll
+
+↓
+
+Reactor模型
+```
+
+升级。
 ### Stage 3：epoll + 多线程（未实现）
 
 针对 select 在大量连接场景下的性能和使用限制，引入 Linux 下更加高效的 epoll。

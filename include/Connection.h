@@ -1,6 +1,7 @@
 #pragma once
 
 #include"Buffer.h"
+#include "IOEvent.h"
 
 class Connection
 {
@@ -8,10 +9,10 @@ class Connection
     public:
         Connection(int fd);
         //接收客户端数据
-        bool recv_data();
+        IOEvent recv_data();
 
         //向客户端发送数据
-        bool send_data();
+       bool send_data();
 
         //获取客户端fd
         int fd() const;

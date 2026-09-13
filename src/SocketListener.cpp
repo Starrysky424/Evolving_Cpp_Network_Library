@@ -4,6 +4,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include<iostream>
+#include<fcntl.h>
 SocketListener::SocketListener(const char *ip, int port)
 {
     fd_ = socket(AF_INET, SOCK_STREAM, 0);
@@ -13,6 +14,25 @@ SocketListener::SocketListener(const char *ip, int port)
         return;
     }
 
+    //设置监听Socket非阻塞
+    int flags = fcntl(fd_, F_GETFL, 0);
+
+    if(flags==-1)
+    {
+        perror("fcntl");
+        close(fd_);
+        fd_ = -1;
+        return;
+    }
+
+    if(fcntl(fd_,F_SETFL,flags | O_NONBLOCK)==-1)
+    {
+        perror("fcntl");
+        close(fd_);
+        fd_ = -1;
+        return;
+    }
+    
     sockaddr_in server_addr{};
 
     server_addr.sin_family = AF_INET;
