@@ -15,6 +15,8 @@ class ConnectionManager
         //根据fd获取Connection
         Connection *get_connection(int fd);
 
-        private:
-            std::unordered_map<int, Connection> connections_;
+        bool has_connection(int fd) const;
+
+    private:
+        std::unordered_map<int, Connection> connections_;
 };

@@ -20,3 +20,8 @@
             return nullptr;
         return &it->second;
     }
+
+    bool ConnectionManager::has_connection(int fd)const
+    {
+        return connections_.find(fd) != connections_.end();
+    }
