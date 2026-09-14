@@ -14,6 +14,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/starrysky/evolvingcnetworklibrary/src/EventLoop.cpp" "CMakeFiles/main.dir/src/EventLoop.cpp.o" "gcc" "CMakeFiles/main.dir/src/EventLoop.cpp.o.d"
   "/home/starrysky/evolvingcnetworklibrary/src/SelectPoller.cpp" "CMakeFiles/main.dir/src/SelectPoller.cpp.o" "gcc" "CMakeFiles/main.dir/src/SelectPoller.cpp.o.d"
   "/home/starrysky/evolvingcnetworklibrary/src/SocketListener.cpp" "CMakeFiles/main.dir/src/SocketListener.cpp.o" "gcc" "CMakeFiles/main.dir/src/SocketListener.cpp.o.d"
+  "/home/starrysky/evolvingcnetworklibrary/src/client.cpp" "CMakeFiles/main.dir/src/client.cpp.o" "gcc" "CMakeFiles/main.dir/src/client.cpp.o.d"
   "/home/starrysky/evolvingcnetworklibrary/src/main.cpp" "CMakeFiles/main.dir/src/main.cpp.o" "gcc" "CMakeFiles/main.dir/src/main.cpp.o.d"
   )
 
