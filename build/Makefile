@@ -129,6 +129,19 @@ main/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
 .PHONY : main/fast
 
+#=============================================================================
+# Target rules for targets named client
+
+# Build rule for target.
+client: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 client
+.PHONY : client
+
+# fast build rule for target.
+client/fast:
+	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/client.dir/build.make benchmark/CMakeFiles/client.dir/build
+.PHONY : client/fast
+
 src/Buffer.o: src/Buffer.cpp.o
 .PHONY : src/Buffer.o
 
@@ -273,30 +286,6 @@ src/SocketListener.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/SocketListener.cpp.s
 .PHONY : src/SocketListener.cpp.s
 
-src/client.o: src/client.cpp.o
-.PHONY : src/client.o
-
-# target to build an object file
-src/client.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/client.cpp.o
-.PHONY : src/client.cpp.o
-
-src/client.i: src/client.cpp.i
-.PHONY : src/client.i
-
-# target to preprocess a source file
-src/client.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/client.cpp.i
-.PHONY : src/client.cpp.i
-
-src/client.s: src/client.cpp.s
-.PHONY : src/client.s
-
-# target to generate assembly for a file
-src/client.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/client.cpp.s
-.PHONY : src/client.cpp.s
-
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
 
@@ -329,6 +318,7 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... client"
 	@echo "... main"
 	@echo "... src/Buffer.o"
 	@echo "... src/Buffer.i"
@@ -348,9 +338,6 @@ help:
 	@echo "... src/SocketListener.o"
 	@echo "... src/SocketListener.i"
 	@echo "... src/SocketListener.s"
-	@echo "... src/client.o"
-	@echo "... src/client.i"
-	@echo "... src/client.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

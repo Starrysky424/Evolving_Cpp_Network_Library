@@ -11,8 +11,6 @@ file(REMOVE_RECURSE
   "CMakeFiles/main.dir/src/SelectPoller.cpp.o.d"
   "CMakeFiles/main.dir/src/SocketListener.cpp.o"
   "CMakeFiles/main.dir/src/SocketListener.cpp.o.d"
-  "CMakeFiles/main.dir/src/client.cpp.o"
-  "CMakeFiles/main.dir/src/client.cpp.o.d"
   "CMakeFiles/main.dir/src/main.cpp.o"
   "CMakeFiles/main.dir/src/main.cpp.o.d"
   "main"
