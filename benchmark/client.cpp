@@ -22,37 +22,57 @@ void client_task(int id,int request_count)
     sockaddr_in server{};
     server.sin_family = AF_INET;
     server.sin_port = htons(PORT);
-    inet_pton(AF_INET,
-              IP,
-              &server.sin_addr);
-    if (connect(fd,
-                (sockaddr *)&server,
-                sizeof(server)) < 0)
+    if (inet_pton(AF_INET,
+                  IP,
+                  &server.sin_addr)<0)
     {
-        perror("connect");
+        perror("inet_pton");
+        close(fd);
         return;
-    }
+    }              
+
+        if (connect(fd,
+                    (sockaddr *)&server,
+                    sizeof(server)) < 0)
+        {
+            perror("connect");
+            return;
+        }
     const char *msg = "hello";
     char buffer[1024];
     
     
     for (int i = 0; i < request_count; i++)
     {
-        send(fd,
-             msg,
-             strlen(msg),
-             0);
-        recv(fd,
-             buffer,
-             sizeof(buffer),
-             0);
+        ssize_t send_n = send(fd, msg, strlen(msg), 0);
+
+        if (send_n <= 0)
+        {
+            perror("send");
+            break;
+        }
+
+        ssize_t recv_n = recv(fd, buffer, sizeof(buffer), 0);
+
+        if (recv_n <= 0)
+        {
+            if (recv_n == 0)
+            {
+                std::cerr << "server closed connection\n";
+            }
+            else
+            {
+                perror("recv");
+            }
+            break;
+        }
     }
     close(fd);
 }
 int main()
 {
     // 模拟客户端数量
-    int client_num = 100;
+    int client_num = 200;
 
     // 每个客户端请求次数
     int request_per_client = 1000;

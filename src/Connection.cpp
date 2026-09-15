@@ -34,7 +34,7 @@
         size_t len = input_buffer_.read_able_bytes();
         if(len==0)
             return true;
-        int send_n = send(fd_, input_buffer_.get(), len, 0);
+        ssize_t send_n = send(fd_, input_buffer_.get(), len, 0);
 
         if(send_n==-1)
         {
