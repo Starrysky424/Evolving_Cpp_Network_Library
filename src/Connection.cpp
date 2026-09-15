@@ -2,11 +2,12 @@
 #include<sys/socket.h>
 #include<unistd.h>
 #include<iostream>
-
-    //构造函数
-    Connection::Connection(int fd)
-        : fd_(fd)
-        {}
+#include <cerrno>
+// 构造函数
+Connection::Connection(int fd)
+    : fd_(fd)
+{
+}
 
     IOEvent Connection::recv_data()
     {
@@ -25,6 +26,7 @@
             return IOEvent::CLOSE;
         }
 
+
         perror("recv");
         return IOEvent::ERROR;
     }
@@ -32,10 +34,13 @@
     bool Connection:: send_data()
     {
         size_t len = input_buffer_.read_able_bytes();
+
+       
         if(len==0)
             return true;
         ssize_t send_n = send(fd_, input_buffer_.get(), len, 0);
 
+       
         if(send_n==-1)
         {
             perror("send");

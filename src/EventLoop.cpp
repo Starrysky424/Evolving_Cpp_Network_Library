@@ -58,6 +58,9 @@ EventLoop::EventLoop(int server_fd)
 
         if (event==IOEvent::CLOSE || event==IOEvent::ERROR)
         {
+            std::cout << "server close fd: " << fd
+                      << ", event: " << static_cast<int>(event)
+                      << std::endl;
             connectionManager_.delete_connection(fd);
             selectPoller_.remove_fd(fd);
             close(fd);
@@ -73,9 +76,16 @@ EventLoop::EventLoop(int server_fd)
 
 void EventLoop::run()
 {
+    long long total_events = 0;
+    long long total_reads = 0;
     while (true)
     {
         int n = selectPoller_.poll(5);
+
+        int cnt = 0;
+        cnt++;
+        if (cnt % 5 == 0)
+            std::cout << "ready events: " << n << std::endl;
         if (n == -1)
         {
             perror("select");
@@ -91,6 +101,10 @@ void EventLoop::run()
 
         for(auto &event:events)
         {
+            total_events++;
+
+         
+
             if(event.type==EventType::NEW_CONNECTION)
             {
                 accept_new_connection();
@@ -98,6 +112,7 @@ void EventLoop::run()
 
             else if(event.type==EventType::READ)
             {
+                total_reads++;
                 handle_client_event(event.fd);
             }
         }

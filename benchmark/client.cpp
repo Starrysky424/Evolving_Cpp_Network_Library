@@ -75,7 +75,7 @@ int main()
     int client_num = 200;
 
     // 每个客户端请求次数
-    int request_per_client = 1000;
+    int request_per_client = 10000;
 
     std::vector<std::thread> threads;
 
