@@ -31,4 +31,11 @@
         return buffer_.data() + read_index_;
     }
 
+    const char *Buffer::peek(ssize_t offset) const
+    {
+        if(offset>=read_able_bytes())
+            return nullptr;
+
+        return buffer_.data() + read_index_ + offset;
+    }
     // 核心实现将Buffer包装，方便Buffer内数据的读取和写入，并不是每次读取数据后从头删除数据 而是定义一个read_index指针表示已读数据的位置，好处就是避免频繁移动和拷贝剩余数据的情况，读写可以解耦，提高 Buffer 的读写效率，同时更适合网络数据分批到达的场景

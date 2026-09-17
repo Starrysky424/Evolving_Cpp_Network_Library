@@ -2,7 +2,7 @@
 
 #include"Buffer.h"
 #include "IOEvent.h"
-
+#include"Decoder.h"
 class Connection
 {
 
@@ -23,9 +23,13 @@ class Connection
         //获取输出的Buffer
         Buffer &output_buffer();
 
+        //解析一条完整通知
+        bool decode_message(std::string &message);
+
     private:
         int fd_;
         Buffer input_buffer_;
 
         Buffer output_buffer_;
+        Decoder decoder_;
 };

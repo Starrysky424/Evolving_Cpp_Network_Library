@@ -22,6 +22,20 @@ void EpollPoller::add_fd(int fd)
         throw std::runtime_error("epoll_ctl add failed");
     }
 }
+
+void EpollPoller::modify_fd(int fd, uint32_t events)
+{
+    epoll_event event{};
+
+    event.events = events;
+
+    event.data.fd = fd;
+    if(epoll_ctl(epoll_fd_,EPOLL_CTL_MOD,fd,&event)==-1)
+    {
+        throw std::runtime_error("epoll_ctl modfiy failed");
+    }
+}
+
 void EpollPoller:: remove_fd(int fd)
 {
     if(epoll_ctl(epoll_fd_,EPOLL_CTL_DEL,fd,nullptr)==-1)

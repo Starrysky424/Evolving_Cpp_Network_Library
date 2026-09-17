@@ -10,6 +10,7 @@ class EpollPoller
         ~EpollPoller();
 
         void add_fd(int fd);
+        void modify_fd(int fd, uint32_t events);
         void remove_fd(int fd);
 
         int wait(int timeout);

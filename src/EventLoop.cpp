@@ -69,9 +69,27 @@ EventLoop::EventLoop(int server_fd)
 
         else  if(event==IOEvent::DATA)
         {
-            if(message_callback_)
-                message_callback_(*client,
-                client->input_buffer());
+           
+            if (message_callback_)
+            {
+                std::string message;
+
+                while (client->decode_message(message))
+                {
+                    message_callback_(*client,
+                                      message);
+
+                    message.clear();
+                }
+                
+               
+            }
+
+            if(client->output_buffer().read_able_bytes()>0)
+            {
+                epollPoller_.modify_fd(fd, EPOLLIN | EPOLLOUT);
+            }
+           
         }
     }
 
@@ -108,6 +126,22 @@ void EventLoop::run()
             {
                
                 handle_client_event(event.fd);
+            }
+
+            else if(event.type==EventType::WRITE)
+            {
+                Connection *client = connectionManager_.get_connection(event.fd);
+                
+                if(client==nullptr)
+                    continue;
+
+                client->send_data();
+
+                if(client->output_buffer().read_able_bytes()==0)
+                {
+                    epollPoller_.modify_fd(event.fd, EPOLLIN);
+                }
+
             }
         }
     }

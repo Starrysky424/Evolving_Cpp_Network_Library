@@ -13,14 +13,14 @@ int main()
 
     EventLoop eventLoop(socketListener.fd());
     eventLoop.set_message_callback(
-        [](Connection &connection, Buffer &buffer)
+        [](Connection &connection, const std::string &message)
         {
-            size_t len = buffer.read_able_bytes();
+           
+           
             connection.output_buffer().add_data(
-                buffer.get(),
-                len);
+               message.data(),
+                message.size());
 
-            buffer.fetch(len);
         });
     eventLoop.run();
     return 0;

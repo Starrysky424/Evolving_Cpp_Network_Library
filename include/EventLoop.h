@@ -4,10 +4,10 @@
 #include<functional>
 #include"ConnectionManager.h"
 #include"Event.h"
-
+#include<string>
     
 
-    using ClientMessageCallback = std::function<void(Connection&,Buffer&)>;
+    using ClientMessageCallback = std::function<void(Connection&,const std::string&)>;
     class EventLoop
     {
     public:

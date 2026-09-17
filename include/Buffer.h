@@ -18,6 +18,9 @@ public:
     // 移动len个位置，表示已读
     void fetch(size_t len);
 
+    //读取read_index后的len个字节
+    const char *peek(ssize_t offset)const;
+
 private:
     std::vector<char> buffer_;
     size_t read_index_ = 0;
