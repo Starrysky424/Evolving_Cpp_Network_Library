@@ -6,6 +6,8 @@ enum class EventType
 
     READ, //读事件
 
+    WRITE, //写事件
+
     CLOSE  //关闭
 };
 

@@ -36,12 +36,12 @@ Connection::Connection(int fd)
 
     bool Connection:: send_data()
     {
-        size_t len = input_buffer_.read_able_bytes();
+        size_t len = output_buffer_.read_able_bytes();
 
        
         if(len==0)
             return true;
-        ssize_t send_n = send(fd_, input_buffer_.get(), len, 0);
+        ssize_t send_n = send(fd_, output_buffer_.get(), len, 0);
 
        
         if(send_n==-1)
@@ -49,7 +49,7 @@ Connection::Connection(int fd)
             perror("send");
             return false;
         }
-        input_buffer_.fetch(send_n);
+        output_buffer_.fetch(send_n);
         return true;
     }
 
@@ -64,6 +64,9 @@ Connection::Connection(int fd)
         return input_buffer_;
     }
 
-   
+    Buffer &Connection::output_buffer()
+    {
+        return output_buffer_;
+    }
 
     // 此类的核心思想是将一个客户端连接对应的fd，recv，send，以及连接该数据的Buffer封装到一起，一个Connection就表示一个客户端连接

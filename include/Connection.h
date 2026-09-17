@@ -20,8 +20,12 @@ class Connection
         //获取输入Buffer
         Buffer &input_buffer();
 
-        
+        //获取输出的Buffer
+        Buffer &output_buffer();
+
     private:
         int fd_;
         Buffer input_buffer_;
+
+        Buffer output_buffer_;
 };

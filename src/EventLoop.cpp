@@ -123,6 +123,7 @@ std::vector<Event> EventLoop:: get_events(int n)
     for (int i = 0; i < n;i++)
     {
         int fd = ready_events[i].data.fd;
+        uint32_t revents = ready_events[i].events;
         if (fd == server_fd_)
         {
             events.emplace_back(fd, EventType::NEW_CONNECTION);
@@ -130,7 +131,15 @@ std::vector<Event> EventLoop:: get_events(int n)
 
         else
         {
-            events.emplace_back(fd, EventType::READ);
+            if(revents&EPOLLIN)
+            {
+                events.emplace_back(fd, EventType::READ);
+            }
+
+            if (revents & EPOLLOUT)
+            {
+                events.emplace_back(fd, EventType::WRITE);
+            }
         }
     }
     return events;

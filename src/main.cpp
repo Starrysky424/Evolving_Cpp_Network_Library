@@ -15,9 +15,12 @@ int main()
     eventLoop.set_message_callback(
         [](Connection &connection, Buffer &buffer)
         {
-            
-            connection.send_data();
+            size_t len = buffer.read_able_bytes();
+            connection.output_buffer().add_data(
+                buffer.get(),
+                len);
 
+            buffer.fetch(len);
         });
     eventLoop.run();
     return 0;
