@@ -6,5 +6,7 @@ enum class IOEvent
 
     CLOSE,  //关闭客户端
 
-    ERROR   //网络错误
+    ERROR,   //网络错误
+
+    NONE  //没有读到数据
 };

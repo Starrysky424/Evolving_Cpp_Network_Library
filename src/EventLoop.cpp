@@ -67,7 +67,8 @@ EventLoop::EventLoop(int server_fd)
             
         }
 
-        else{
+        else  if(event==IOEvent::DATA)
+        {
             if(message_callback_)
                 message_callback_(*client,
                 client->input_buffer());

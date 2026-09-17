@@ -26,7 +26,10 @@ Connection::Connection(int fd)
             return IOEvent::CLOSE;
         }
 
-
+        if(errno==EAGAIN || errno==EWOULDBLOCK)
+        {
+            return IOEvent::NONE;
+        }
         perror("recv");
         return IOEvent::ERROR;
     }
