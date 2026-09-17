@@ -9,7 +9,7 @@
 EventLoop::EventLoop(int server_fd)
     : server_fd_(server_fd)
     {
-        selectPoller_.add_fd(server_fd_);
+        epollPoller_.add_fd(server_fd_);
     }
 
     // 有新客户端连接
@@ -39,7 +39,7 @@ EventLoop::EventLoop(int server_fd)
 
         fcntl(client_fd, F_SETFL, flags | O_NONBLOCK);
 
-        selectPoller_.add_fd(client_fd);
+        epollPoller_.add_fd(client_fd);
         connectionManager_.add_connection(client_fd);
 
         std::cout << "new client:" << client_fd << std::endl;
@@ -62,7 +62,7 @@ EventLoop::EventLoop(int server_fd)
                       << ", event: " << static_cast<int>(event)
                       << std::endl;
             connectionManager_.delete_connection(fd);
-            selectPoller_.remove_fd(fd);
+            epollPoller_.remove_fd(fd);
             close(fd);
             
         }
@@ -76,35 +76,28 @@ EventLoop::EventLoop(int server_fd)
 
 void EventLoop::run()
 {
-    long long total_events = 0;
-    long long total_reads = 0;
+    
     while (true)
     {
-        int n = selectPoller_.poll(5);
+        int n = epollPoller_.wait(5000);
 
-        int cnt = 0;
-        cnt++;
-        if (cnt % 5 == 0)
-            std::cout << "ready events: " << n << std::endl;
+      
         if (n == -1)
         {
-            perror("select");
+            perror("epoll_wait");
             continue;
         }
         else if (n == 0)
         {
-            std::cout << "select timeout" << std::endl;
+            std::cout << "epoll timeout" << std::endl;
             continue;
         }
 
-        auto events = get_events();
+        auto events = get_events(n);
 
         for(auto &event:events)
         {
-            total_events++;
-
-         
-
+            
             if(event.type==EventType::NEW_CONNECTION)
             {
                 accept_new_connection();
@@ -112,7 +105,7 @@ void EventLoop::run()
 
             else if(event.type==EventType::READ)
             {
-                total_reads++;
+               
                 handle_client_event(event.fd);
             }
         }
@@ -121,13 +114,15 @@ void EventLoop::run()
 
 
 
-std::vector<Event> EventLoop:: get_events()
+std::vector<Event> EventLoop:: get_events(int n)
 {
     std::vector<Event> events;
+    const auto &ready_events = epollPoller_.get_ready_events();
 
-    for(int fd:selectPoller_.get_ready_fds())
+    for (int i = 0; i < n;i++)
     {
-        if(fd==server_fd_)
+        int fd = ready_events[i].data.fd;
+        if (fd == server_fd_)
         {
             events.emplace_back(fd, EventType::NEW_CONNECTION);
         }

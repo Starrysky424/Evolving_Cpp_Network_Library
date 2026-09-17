@@ -214,6 +214,30 @@ src/ConnectionManager.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/ConnectionManager.cpp.s
 .PHONY : src/ConnectionManager.cpp.s
 
+src/EpollerPoller.o: src/EpollerPoller.cpp.o
+.PHONY : src/EpollerPoller.o
+
+# target to build an object file
+src/EpollerPoller.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/EpollerPoller.cpp.o
+.PHONY : src/EpollerPoller.cpp.o
+
+src/EpollerPoller.i: src/EpollerPoller.cpp.i
+.PHONY : src/EpollerPoller.i
+
+# target to preprocess a source file
+src/EpollerPoller.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/EpollerPoller.cpp.i
+.PHONY : src/EpollerPoller.cpp.i
+
+src/EpollerPoller.s: src/EpollerPoller.cpp.s
+.PHONY : src/EpollerPoller.s
+
+# target to generate assembly for a file
+src/EpollerPoller.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/EpollerPoller.cpp.s
+.PHONY : src/EpollerPoller.cpp.s
+
 src/EventLoop.o: src/EventLoop.cpp.o
 .PHONY : src/EventLoop.o
 
@@ -329,6 +353,9 @@ help:
 	@echo "... src/ConnectionManager.o"
 	@echo "... src/ConnectionManager.i"
 	@echo "... src/ConnectionManager.s"
+	@echo "... src/EpollerPoller.o"
+	@echo "... src/EpollerPoller.i"
+	@echo "... src/EpollerPoller.s"
 	@echo "... src/EventLoop.o"
 	@echo "... src/EventLoop.i"
 	@echo "... src/EventLoop.s"

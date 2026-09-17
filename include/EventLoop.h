@@ -1,6 +1,6 @@
 #pragma once
 
-#include"SelectPoller.h"
+#include"EpollPoller.h"
 #include<functional>
 #include"ConnectionManager.h"
 #include"Event.h"
@@ -23,12 +23,12 @@
         void accept_new_connection();
         void handle_client_event(int fd);
 
-        std::vector<Event> get_events();
+        std::vector<Event> get_events(int n);
 
     private:
         int server_fd_;
-        SelectPoller selectPoller_;
+        EpollPoller epollPoller_;
         ConnectionManager connectionManager_;
-      
+
         ClientMessageCallback message_callback_;
     };
