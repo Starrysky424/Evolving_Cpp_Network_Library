@@ -67,3 +67,36 @@ select 负责“发现哪个客户端有事件”，ConnectionManager 负责“�
    今日收获
 
 进一步理解 Reactor 事件驱动模型，通过事件抽象和回调机制实现网络框架模块解耦，为后续完善网络库架构以及升级 epoll 做准备。
+
+
+2026年9月17日
+今日进度
+
+1. 完善 Buffer
+   - 增加 peek()。
+   - 理解 Buffer 用于缓存 TCP 字节流，解决拆包/粘包问题。
+
+2. 引入 epoll
+   - 添加 EpollPoller，封装 epoll。
+   - 客户端 socket 设置为非阻塞。
+   - 理解 EPOLLIN / EPOLLOUT。
+
+3. 完善 EventLoop
+   - 将 epoll 事件转换为 Event。
+   - 实现读事件、写事件的分发。
+   - 理解有数据才监听 EPOLLOUT。
+
+4. 引入 Decoder
+   - 设计 [4字节 length][message] 协议。
+   - Decoder 负责判断消息是否完整并提取 message。
+   - 理解 htonl() / ntohl() 的作用。
+
+5. Connection 集成 Decoder
+   - 每个 Connection 拥有自己的 Decoder。
+
+   - 数据处理流程逐渐变为： recv → Buffer → Decoder → Message → Callback
+
+
+今日理解
+
+epoll 负责“发现哪个 fd 有事件”，EventLoop 负责“分发事件”，Connection 负责“管理客户端连接”，Buffer 负责“缓存字节流”，Decoder 负责“解析完整消息”。

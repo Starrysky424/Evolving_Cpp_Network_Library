@@ -1,133 +1,97 @@
-#include <iostream>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <unistd.h>
-#include <chrono>
-#include <cstring>
-#include <thread>
-#include <vector>
-
-const char *IP = "127.0.0.1";
-const int PORT = 8080;
-
-
-void client_task(int id,int request_count)
+#include<iostream>
+#include<sys/socket.h>
+#include<unistd.h>
+#include<netinet/in.h>
+#include<arpa/inet.h>
+#include<string>
+#include"Buffer.h"
+#include"Decoder.h"
+void send_message(int fd,const std::string &message)
 {
-    int fd = socket(AF_INET, SOCK_STREAM, 0);
-    if (fd < 0)
+    uint32_t length = message.size();
+    length = htonl(length);
+
+    // 传输协议头，还未发送完整数据
+    if (send(fd, &length, sizeof(length), 0) == -1)
     {
-        perror("socket");
-        return;
-    }
-    sockaddr_in server{};
-    server.sin_family = AF_INET;
-    server.sin_port = htons(PORT);
-    if (inet_pton(AF_INET,
-                  IP,
-                  &server.sin_addr)<0)
-    {
-        perror("inet_pton");
+        perror("send length");
         close(fd);
-        return;
-    }              
-
-        if (connect(fd,
-                    (sockaddr *)&server,
-                    sizeof(server)) < 0)
-        {
-            perror("connect");
-            return;
-        }
-    const char *msg = "hello";
-    char buffer[1024];
-    
-    
-    for (int i = 0; i < request_count; i++)
-    {
-        ssize_t send_n = send(fd, msg, strlen(msg), 0);
-
-        if (send_n <= 0)
-        {
-            perror("send");
-            break;
-        }
-
-        ssize_t recv_n = recv(fd, buffer, sizeof(buffer), 0);
-
-        if (recv_n <= 0)
-        {
-            if (recv_n == 0)
-            {
-                std::cerr << "server closed connection\n";
-            }
-            else
-            {
-                perror("recv");
-            }
-            break;
-        }
+        return ;
     }
-    close(fd);
+
+    // 传输完整消息
+    if (send(fd, message.data(), message.size(), 0) == -1)
+    {
+        perror("send message");
+        close(fd);
+        return ;
+    }
 }
 int main()
 {
-    // 模拟客户端数量
-    int client_num = 200;
+    int fd = socket(AF_INET, SOCK_STREAM, 0);
 
-    // 每个客户端请求次数
-    int request_per_client = 10000;
-
-    std::vector<std::thread> threads;
-
-    auto start =
-        std::chrono::steady_clock::now();
-
-    // 创建10个客户端
-    for (int i = 0; i < client_num; i++)
+    if(fd==-1)
     {
-        threads.emplace_back(
-            client_task,
-            i,
-            request_per_client);
+        perror("socket");
+        return 1;
     }
 
-    // 等待所有客户端结束
-    for (auto &t : threads)
+    sockaddr_in server_addr{};
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(8080);
+
+    inet_pton(AF_INET, "127.0.0.1", &server_addr.sin_addr);
+
+    if(connect(fd,(sockaddr *)&server_addr,sizeof(server_addr))==-1)
     {
-        t.join();
+        perror(("connect"));
+        close(fd);
+        return 1;
     }
 
-    auto end =
-        std::chrono::steady_clock::now();
+    std::string message1(5000,'A');
+    std::string messag2 = "WORLD";
+    send_message(fd, message1);
+    send_message(fd, messag2);
 
-    auto cost =
-        std::chrono::duration_cast<
-            std::chrono::milliseconds>(end - start)
-            .count();
+    Buffer input_buffer;
+    Decoder decoder;
 
-    int total_request =
-        client_num * request_per_client;
+    int message_count = 0;
 
-    std::cout
-        << "clients: "
-        << client_num
-        << std::endl;
+    while (message_count<2)
+    {
+        char buffer[1024]{};
+        int n = recv(fd, buffer, sizeof(buffer) - 1, 0);
 
-    std::cout
-        << "request: "
-        << total_request
-        << std::endl;
+        if (n > 0)
+        {
+            input_buffer.add_data(buffer, n);
+            std::string message;
 
-    std::cout
-        << "time: "
-        << cost
-        << " ms"
-        << std::endl;
+            while(decoder.decode(input_buffer,message))
+            {
+                std::cout << "server reply:" << message << std::endl;
+                message.clear();
+                message_count++;
+            }
+                }
 
-    std::cout
-        << "QPS: "
-        << total_request / (cost / 1000.0)
-        << std::endl;
+        else if (n == 0)
+        {
+            std::cout << "server closed connection" << std::endl;
+            break;
+        }
+        else
+        {
+            perror("recv");
+            break;
+        }
+    }
+    
+    std::cout << "connected to server" << std::endl;
 
+    close(fd);
     return 0;
 }

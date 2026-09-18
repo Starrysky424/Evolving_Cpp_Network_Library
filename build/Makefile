@@ -117,17 +117,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named main
+# Target rules for targets named network_lib
 
 # Build rule for target.
-main: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 main
-.PHONY : main
+network_lib: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 network_lib
+.PHONY : network_lib
 
 # fast build rule for target.
-main/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
-.PHONY : main/fast
+network_lib/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/network_lib.dir/build.make CMakeFiles/network_lib.dir/build
+.PHONY : network_lib/fast
 
 #=============================================================================
 # Target rules for targets named client
@@ -147,7 +147,7 @@ src/Buffer.o: src/Buffer.cpp.o
 
 # target to build an object file
 src/Buffer.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/Buffer.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/network_lib.dir/build.make CMakeFiles/network_lib.dir/src/Buffer.cpp.o
 .PHONY : src/Buffer.cpp.o
 
 src/Buffer.i: src/Buffer.cpp.i
@@ -155,7 +155,7 @@ src/Buffer.i: src/Buffer.cpp.i
 
 # target to preprocess a source file
 src/Buffer.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/Buffer.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/network_lib.dir/build.make CMakeFiles/network_lib.dir/src/Buffer.cpp.i
 .PHONY : src/Buffer.cpp.i
 
 src/Buffer.s: src/Buffer.cpp.s
@@ -163,7 +163,7 @@ src/Buffer.s: src/Buffer.cpp.s
 
 # target to generate assembly for a file
 src/Buffer.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/Buffer.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/network_lib.dir/build.make CMakeFiles/network_lib.dir/src/Buffer.cpp.s
 .PHONY : src/Buffer.cpp.s
 
 src/Connection.o: src/Connection.cpp.o
@@ -171,7 +171,7 @@ src/Connection.o: src/Connection.cpp.o
 
 # target to build an object file
 src/Connection.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/Connection.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/network_lib.dir/build.make CMakeFiles/network_lib.dir/src/Connection.cpp.o
 .PHONY : src/Connection.cpp.o
 
 src/Connection.i: src/Connection.cpp.i
@@ -179,7 +179,7 @@ src/Connection.i: src/Connection.cpp.i
 
 # target to preprocess a source file
 src/Connection.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/Connection.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/network_lib.dir/build.make CMakeFiles/network_lib.dir/src/Connection.cpp.i
 .PHONY : src/Connection.cpp.i
 
 src/Connection.s: src/Connection.cpp.s
@@ -187,7 +187,7 @@ src/Connection.s: src/Connection.cpp.s
 
 # target to generate assembly for a file
 src/Connection.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/Connection.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/network_lib.dir/build.make CMakeFiles/network_lib.dir/src/Connection.cpp.s
 .PHONY : src/Connection.cpp.s
 
 src/ConnectionManager.o: src/ConnectionManager.cpp.o
@@ -195,7 +195,7 @@ src/ConnectionManager.o: src/ConnectionManager.cpp.o
 
 # target to build an object file
 src/ConnectionManager.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/ConnectionManager.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/network_lib.dir/build.make CMakeFiles/network_lib.dir/src/ConnectionManager.cpp.o
 .PHONY : src/ConnectionManager.cpp.o
 
 src/ConnectionManager.i: src/ConnectionManager.cpp.i
@@ -203,7 +203,7 @@ src/ConnectionManager.i: src/ConnectionManager.cpp.i
 
 # target to preprocess a source file
 src/ConnectionManager.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/ConnectionManager.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/network_lib.dir/build.make CMakeFiles/network_lib.dir/src/ConnectionManager.cpp.i
 .PHONY : src/ConnectionManager.cpp.i
 
 src/ConnectionManager.s: src/ConnectionManager.cpp.s
@@ -211,15 +211,39 @@ src/ConnectionManager.s: src/ConnectionManager.cpp.s
 
 # target to generate assembly for a file
 src/ConnectionManager.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/ConnectionManager.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/network_lib.dir/build.make CMakeFiles/network_lib.dir/src/ConnectionManager.cpp.s
 .PHONY : src/ConnectionManager.cpp.s
+
+src/Decoder.o: src/Decoder.cpp.o
+.PHONY : src/Decoder.o
+
+# target to build an object file
+src/Decoder.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/network_lib.dir/build.make CMakeFiles/network_lib.dir/src/Decoder.cpp.o
+.PHONY : src/Decoder.cpp.o
+
+src/Decoder.i: src/Decoder.cpp.i
+.PHONY : src/Decoder.i
+
+# target to preprocess a source file
+src/Decoder.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/network_lib.dir/build.make CMakeFiles/network_lib.dir/src/Decoder.cpp.i
+.PHONY : src/Decoder.cpp.i
+
+src/Decoder.s: src/Decoder.cpp.s
+.PHONY : src/Decoder.s
+
+# target to generate assembly for a file
+src/Decoder.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/network_lib.dir/build.make CMakeFiles/network_lib.dir/src/Decoder.cpp.s
+.PHONY : src/Decoder.cpp.s
 
 src/EpollerPoller.o: src/EpollerPoller.cpp.o
 .PHONY : src/EpollerPoller.o
 
 # target to build an object file
 src/EpollerPoller.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/EpollerPoller.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/network_lib.dir/build.make CMakeFiles/network_lib.dir/src/EpollerPoller.cpp.o
 .PHONY : src/EpollerPoller.cpp.o
 
 src/EpollerPoller.i: src/EpollerPoller.cpp.i
@@ -227,7 +251,7 @@ src/EpollerPoller.i: src/EpollerPoller.cpp.i
 
 # target to preprocess a source file
 src/EpollerPoller.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/EpollerPoller.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/network_lib.dir/build.make CMakeFiles/network_lib.dir/src/EpollerPoller.cpp.i
 .PHONY : src/EpollerPoller.cpp.i
 
 src/EpollerPoller.s: src/EpollerPoller.cpp.s
@@ -235,7 +259,7 @@ src/EpollerPoller.s: src/EpollerPoller.cpp.s
 
 # target to generate assembly for a file
 src/EpollerPoller.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/EpollerPoller.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/network_lib.dir/build.make CMakeFiles/network_lib.dir/src/EpollerPoller.cpp.s
 .PHONY : src/EpollerPoller.cpp.s
 
 src/EventLoop.o: src/EventLoop.cpp.o
@@ -243,7 +267,7 @@ src/EventLoop.o: src/EventLoop.cpp.o
 
 # target to build an object file
 src/EventLoop.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/EventLoop.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/network_lib.dir/build.make CMakeFiles/network_lib.dir/src/EventLoop.cpp.o
 .PHONY : src/EventLoop.cpp.o
 
 src/EventLoop.i: src/EventLoop.cpp.i
@@ -251,7 +275,7 @@ src/EventLoop.i: src/EventLoop.cpp.i
 
 # target to preprocess a source file
 src/EventLoop.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/EventLoop.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/network_lib.dir/build.make CMakeFiles/network_lib.dir/src/EventLoop.cpp.i
 .PHONY : src/EventLoop.cpp.i
 
 src/EventLoop.s: src/EventLoop.cpp.s
@@ -259,7 +283,7 @@ src/EventLoop.s: src/EventLoop.cpp.s
 
 # target to generate assembly for a file
 src/EventLoop.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/EventLoop.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/network_lib.dir/build.make CMakeFiles/network_lib.dir/src/EventLoop.cpp.s
 .PHONY : src/EventLoop.cpp.s
 
 src/SelectPoller.o: src/SelectPoller.cpp.o
@@ -267,7 +291,7 @@ src/SelectPoller.o: src/SelectPoller.cpp.o
 
 # target to build an object file
 src/SelectPoller.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/SelectPoller.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/network_lib.dir/build.make CMakeFiles/network_lib.dir/src/SelectPoller.cpp.o
 .PHONY : src/SelectPoller.cpp.o
 
 src/SelectPoller.i: src/SelectPoller.cpp.i
@@ -275,7 +299,7 @@ src/SelectPoller.i: src/SelectPoller.cpp.i
 
 # target to preprocess a source file
 src/SelectPoller.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/SelectPoller.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/network_lib.dir/build.make CMakeFiles/network_lib.dir/src/SelectPoller.cpp.i
 .PHONY : src/SelectPoller.cpp.i
 
 src/SelectPoller.s: src/SelectPoller.cpp.s
@@ -283,7 +307,7 @@ src/SelectPoller.s: src/SelectPoller.cpp.s
 
 # target to generate assembly for a file
 src/SelectPoller.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/SelectPoller.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/network_lib.dir/build.make CMakeFiles/network_lib.dir/src/SelectPoller.cpp.s
 .PHONY : src/SelectPoller.cpp.s
 
 src/SocketListener.o: src/SocketListener.cpp.o
@@ -291,7 +315,7 @@ src/SocketListener.o: src/SocketListener.cpp.o
 
 # target to build an object file
 src/SocketListener.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/SocketListener.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/network_lib.dir/build.make CMakeFiles/network_lib.dir/src/SocketListener.cpp.o
 .PHONY : src/SocketListener.cpp.o
 
 src/SocketListener.i: src/SocketListener.cpp.i
@@ -299,7 +323,7 @@ src/SocketListener.i: src/SocketListener.cpp.i
 
 # target to preprocess a source file
 src/SocketListener.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/SocketListener.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/network_lib.dir/build.make CMakeFiles/network_lib.dir/src/SocketListener.cpp.i
 .PHONY : src/SocketListener.cpp.i
 
 src/SocketListener.s: src/SocketListener.cpp.s
@@ -307,7 +331,7 @@ src/SocketListener.s: src/SocketListener.cpp.s
 
 # target to generate assembly for a file
 src/SocketListener.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/SocketListener.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/network_lib.dir/build.make CMakeFiles/network_lib.dir/src/SocketListener.cpp.s
 .PHONY : src/SocketListener.cpp.s
 
 src/main.o: src/main.cpp.o
@@ -315,7 +339,7 @@ src/main.o: src/main.cpp.o
 
 # target to build an object file
 src/main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/main.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/network_lib.dir/build.make CMakeFiles/network_lib.dir/src/main.cpp.o
 .PHONY : src/main.cpp.o
 
 src/main.i: src/main.cpp.i
@@ -323,7 +347,7 @@ src/main.i: src/main.cpp.i
 
 # target to preprocess a source file
 src/main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/main.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/network_lib.dir/build.make CMakeFiles/network_lib.dir/src/main.cpp.i
 .PHONY : src/main.cpp.i
 
 src/main.s: src/main.cpp.s
@@ -331,7 +355,7 @@ src/main.s: src/main.cpp.s
 
 # target to generate assembly for a file
 src/main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/main.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/network_lib.dir/build.make CMakeFiles/network_lib.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
 # Help Target
@@ -343,7 +367,7 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... client"
-	@echo "... main"
+	@echo "... network_lib"
 	@echo "... src/Buffer.o"
 	@echo "... src/Buffer.i"
 	@echo "... src/Buffer.s"
@@ -353,6 +377,9 @@ help:
 	@echo "... src/ConnectionManager.o"
 	@echo "... src/ConnectionManager.i"
 	@echo "... src/ConnectionManager.s"
+	@echo "... src/Decoder.o"
+	@echo "... src/Decoder.i"
+	@echo "... src/Decoder.s"
 	@echo "... src/EpollerPoller.o"
 	@echo "... src/EpollerPoller.i"
 	@echo "... src/EpollerPoller.s"

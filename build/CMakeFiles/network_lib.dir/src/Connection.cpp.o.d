@@ -1,7 +1,6 @@
-CMakeFiles/main.dir/src/ConnectionManager.cpp.o: \
- /home/starrysky/evolvingcnetworklibrary/src/ConnectionManager.cpp \
+CMakeFiles/network_lib.dir/src/Connection.cpp.o: \
+ /home/starrysky/evolvingcnetworklibrary/src/Connection.cpp \
  /usr/include/stdc-predef.h \
- /home/starrysky/evolvingcnetworklibrary/include/ConnectionManager.h \
  /home/starrysky/evolvingcnetworklibrary/include/Connection.h \
  /home/starrysky/evolvingcnetworklibrary/include/Buffer.h \
  /usr/include/c++/11/vector /usr/include/c++/11/bits/stl_algobase.h \
@@ -140,14 +139,50 @@ CMakeFiles/main.dir/src/ConnectionManager.cpp.o: \
  /usr/include/c++/11/bits/charconv.h \
  /usr/include/c++/11/bits/basic_string.tcc \
  /home/starrysky/evolvingcnetworklibrary/include/IOEvent.h \
- /usr/include/c++/11/unordered_map \
- /usr/include/c++/11/ext/aligned_buffer.h \
- /usr/include/c++/11/bits/hashtable.h \
- /usr/include/c++/11/bits/hashtable_policy.h /usr/include/c++/11/tuple \
- /usr/include/c++/11/utility /usr/include/c++/11/bits/stl_relops.h \
- /usr/include/c++/11/array /usr/include/c++/11/bits/uses_allocator.h \
- /usr/include/c++/11/bits/invoke.h \
- /usr/include/c++/11/bits/enable_special_members.h \
- /usr/include/c++/11/bits/node_handle.h \
- /usr/include/c++/11/bits/unordered_map.h \
- /usr/include/c++/11/bits/erase_if.h
+ /home/starrysky/evolvingcnetworklibrary/include/Decoder.h \
+ /usr/include/x86_64-linux-gnu/sys/socket.h \
+ /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
+ /usr/include/x86_64-linux-gnu/bits/socket.h \
+ /usr/include/x86_64-linux-gnu/bits/socket_type.h \
+ /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
+ /usr/include/x86_64-linux-gnu/asm/socket.h \
+ /usr/include/asm-generic/socket.h /usr/include/linux/posix_types.h \
+ /usr/include/linux/stddef.h \
+ /usr/include/x86_64-linux-gnu/asm/posix_types.h \
+ /usr/include/x86_64-linux-gnu/asm/posix_types_64.h \
+ /usr/include/asm-generic/posix_types.h \
+ /usr/include/x86_64-linux-gnu/asm/bitsperlong.h \
+ /usr/include/asm-generic/bitsperlong.h \
+ /usr/include/x86_64-linux-gnu/asm/sockios.h \
+ /usr/include/asm-generic/sockios.h \
+ /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
+ /usr/include/x86_64-linux-gnu/bits/socket2.h /usr/include/unistd.h \
+ /usr/include/x86_64-linux-gnu/bits/posix_opt.h \
+ /usr/include/x86_64-linux-gnu/bits/environments.h \
+ /usr/include/x86_64-linux-gnu/bits/confname.h \
+ /usr/include/x86_64-linux-gnu/bits/getopt_posix.h \
+ /usr/include/x86_64-linux-gnu/bits/getopt_core.h \
+ /usr/include/x86_64-linux-gnu/bits/unistd.h \
+ /usr/include/x86_64-linux-gnu/bits/unistd_ext.h \
+ /usr/include/linux/close_range.h /usr/include/c++/11/iostream \
+ /usr/include/c++/11/ostream /usr/include/c++/11/ios \
+ /usr/include/c++/11/exception /usr/include/c++/11/bits/exception_ptr.h \
+ /usr/include/c++/11/bits/cxxabi_init_exception.h \
+ /usr/include/c++/11/typeinfo /usr/include/c++/11/bits/nested_exception.h \
+ /usr/include/c++/11/bits/ios_base.h \
+ /usr/include/c++/11/bits/locale_classes.h \
+ /usr/include/c++/11/bits/locale_classes.tcc \
+ /usr/include/c++/11/system_error \
+ /usr/include/x86_64-linux-gnu/c++/11/bits/error_constants.h \
+ /usr/include/c++/11/stdexcept /usr/include/c++/11/streambuf \
+ /usr/include/c++/11/bits/streambuf.tcc \
+ /usr/include/c++/11/bits/basic_ios.h \
+ /usr/include/c++/11/bits/locale_facets.h /usr/include/c++/11/cwctype \
+ /usr/include/wctype.h /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h \
+ /usr/include/x86_64-linux-gnu/c++/11/bits/ctype_base.h \
+ /usr/include/c++/11/bits/streambuf_iterator.h \
+ /usr/include/x86_64-linux-gnu/c++/11/bits/ctype_inline.h \
+ /usr/include/c++/11/bits/locale_facets.tcc \
+ /usr/include/c++/11/bits/basic_ios.tcc \
+ /usr/include/c++/11/bits/ostream.tcc /usr/include/c++/11/istream \
+ /usr/include/c++/11/bits/istream.tcc

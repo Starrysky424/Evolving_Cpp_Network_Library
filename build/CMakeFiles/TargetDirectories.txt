@@ -1,4 +1,4 @@
-/home/starrysky/evolvingcnetworklibrary/build/CMakeFiles/main.dir
+/home/starrysky/evolvingcnetworklibrary/build/CMakeFiles/network_lib.dir
 /home/starrysky/evolvingcnetworklibrary/build/CMakeFiles/edit_cache.dir
 /home/starrysky/evolvingcnetworklibrary/build/CMakeFiles/rebuild_cache.dir
 /home/starrysky/evolvingcnetworklibrary/build/benchmark/CMakeFiles/client.dir

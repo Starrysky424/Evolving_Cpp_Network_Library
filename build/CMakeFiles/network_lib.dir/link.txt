@@ -1,0 +1,2 @@
+/usr/bin/ar qc libnetwork_lib.a CMakeFiles/network_lib.dir/src/Buffer.cpp.o CMakeFiles/network_lib.dir/src/Connection.cpp.o CMakeFiles/network_lib.dir/src/ConnectionManager.cpp.o CMakeFiles/network_lib.dir/src/Decoder.cpp.o CMakeFiles/network_lib.dir/src/EpollerPoller.cpp.o CMakeFiles/network_lib.dir/src/EventLoop.cpp.o CMakeFiles/network_lib.dir/src/SelectPoller.cpp.o CMakeFiles/network_lib.dir/src/SocketListener.cpp.o CMakeFiles/network_lib.dir/src/main.cpp.o
+/usr/bin/ranlib libnetwork_lib.a
