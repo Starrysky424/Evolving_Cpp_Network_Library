@@ -64,6 +64,7 @@ CMAKE_BINARY_DIR = /home/starrysky/evolvingcnetworklibrary/build
 
 # The main recursive "all" target.
 all: CMakeFiles/network_lib.dir/all
+all: CMakeFiles/main.dir/all
 all: benchmark/all
 .PHONY : all
 
@@ -73,6 +74,7 @@ preinstall: benchmark/preinstall
 
 # The main recursive "clean" target.
 clean: CMakeFiles/network_lib.dir/clean
+clean: CMakeFiles/main.dir/clean
 clean: benchmark/clean
 .PHONY : clean
 
@@ -98,12 +100,12 @@ benchmark/clean: benchmark/CMakeFiles/client.dir/clean
 CMakeFiles/network_lib.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/network_lib.dir/build.make CMakeFiles/network_lib.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/network_lib.dir/build.make CMakeFiles/network_lib.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/starrysky/evolvingcnetworklibrary/build/CMakeFiles --progress-num=3,4,5,6,7,8,9,10,11,12 "Built target network_lib"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/starrysky/evolvingcnetworklibrary/build/CMakeFiles --progress-num=5,6,7,8,9,10,11,12,13 "Built target network_lib"
 .PHONY : CMakeFiles/network_lib.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/network_lib.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/starrysky/evolvingcnetworklibrary/build/CMakeFiles 10
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/starrysky/evolvingcnetworklibrary/build/CMakeFiles 9
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/network_lib.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/starrysky/evolvingcnetworklibrary/build/CMakeFiles 0
 .PHONY : CMakeFiles/network_lib.dir/rule
@@ -118,6 +120,32 @@ CMakeFiles/network_lib.dir/clean:
 .PHONY : CMakeFiles/network_lib.dir/clean
 
 #=============================================================================
+# Target rules for target CMakeFiles/main.dir
+
+# All Build rule for target.
+CMakeFiles/main.dir/all: CMakeFiles/network_lib.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/starrysky/evolvingcnetworklibrary/build/CMakeFiles --progress-num=3,4 "Built target main"
+.PHONY : CMakeFiles/main.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/main.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/starrysky/evolvingcnetworklibrary/build/CMakeFiles 11
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/main.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/starrysky/evolvingcnetworklibrary/build/CMakeFiles 0
+.PHONY : CMakeFiles/main.dir/rule
+
+# Convenience name for target.
+main: CMakeFiles/main.dir/rule
+.PHONY : main
+
+# clean rule for target.
+CMakeFiles/main.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/clean
+.PHONY : CMakeFiles/main.dir/clean
+
+#=============================================================================
 # Target rules for target benchmark/CMakeFiles/client.dir
 
 # All Build rule for target.
@@ -129,7 +157,7 @@ benchmark/CMakeFiles/client.dir/all: CMakeFiles/network_lib.dir/all
 
 # Build rule for subdir invocation for target.
 benchmark/CMakeFiles/client.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/starrysky/evolvingcnetworklibrary/build/CMakeFiles 12
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/starrysky/evolvingcnetworklibrary/build/CMakeFiles 11
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 benchmark/CMakeFiles/client.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/starrysky/evolvingcnetworklibrary/build/CMakeFiles 0
 .PHONY : benchmark/CMakeFiles/client.dir/rule

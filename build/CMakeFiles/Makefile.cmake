@@ -121,5 +121,6 @@ set(CMAKE_MAKEFILE_PRODUCTS
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/network_lib.dir/DependInfo.cmake"
+  "CMakeFiles/main.dir/DependInfo.cmake"
   "benchmark/CMakeFiles/client.dir/DependInfo.cmake"
   )

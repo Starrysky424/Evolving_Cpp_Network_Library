@@ -181,20 +181,6 @@ CMakeFiles/network_lib.dir/src/SocketListener.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/network_lib.dir/src/SocketListener.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/starrysky/evolvingcnetworklibrary/src/SocketListener.cpp -o CMakeFiles/network_lib.dir/src/SocketListener.cpp.s
 
-CMakeFiles/network_lib.dir/src/main.cpp.o: CMakeFiles/network_lib.dir/flags.make
-CMakeFiles/network_lib.dir/src/main.cpp.o: ../src/main.cpp
-CMakeFiles/network_lib.dir/src/main.cpp.o: CMakeFiles/network_lib.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/starrysky/evolvingcnetworklibrary/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/network_lib.dir/src/main.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/network_lib.dir/src/main.cpp.o -MF CMakeFiles/network_lib.dir/src/main.cpp.o.d -o CMakeFiles/network_lib.dir/src/main.cpp.o -c /home/starrysky/evolvingcnetworklibrary/src/main.cpp
-
-CMakeFiles/network_lib.dir/src/main.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/network_lib.dir/src/main.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/starrysky/evolvingcnetworklibrary/src/main.cpp > CMakeFiles/network_lib.dir/src/main.cpp.i
-
-CMakeFiles/network_lib.dir/src/main.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/network_lib.dir/src/main.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/starrysky/evolvingcnetworklibrary/src/main.cpp -o CMakeFiles/network_lib.dir/src/main.cpp.s
-
 # Object files for target network_lib
 network_lib_OBJECTS = \
 "CMakeFiles/network_lib.dir/src/Buffer.cpp.o" \
@@ -204,8 +190,7 @@ network_lib_OBJECTS = \
 "CMakeFiles/network_lib.dir/src/EpollerPoller.cpp.o" \
 "CMakeFiles/network_lib.dir/src/EventLoop.cpp.o" \
 "CMakeFiles/network_lib.dir/src/SelectPoller.cpp.o" \
-"CMakeFiles/network_lib.dir/src/SocketListener.cpp.o" \
-"CMakeFiles/network_lib.dir/src/main.cpp.o"
+"CMakeFiles/network_lib.dir/src/SocketListener.cpp.o"
 
 # External object files for target network_lib
 network_lib_EXTERNAL_OBJECTS =
@@ -218,10 +203,9 @@ libnetwork_lib.a: CMakeFiles/network_lib.dir/src/EpollerPoller.cpp.o
 libnetwork_lib.a: CMakeFiles/network_lib.dir/src/EventLoop.cpp.o
 libnetwork_lib.a: CMakeFiles/network_lib.dir/src/SelectPoller.cpp.o
 libnetwork_lib.a: CMakeFiles/network_lib.dir/src/SocketListener.cpp.o
-libnetwork_lib.a: CMakeFiles/network_lib.dir/src/main.cpp.o
 libnetwork_lib.a: CMakeFiles/network_lib.dir/build.make
 libnetwork_lib.a: CMakeFiles/network_lib.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/starrysky/evolvingcnetworklibrary/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Linking CXX static library libnetwork_lib.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/starrysky/evolvingcnetworklibrary/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Linking CXX static library libnetwork_lib.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/network_lib.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/network_lib.dir/link.txt --verbose=$(VERBOSE)
 
