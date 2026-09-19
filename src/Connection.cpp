@@ -16,7 +16,7 @@ Connection::Connection(int fd)
 
         if(len>0)
         {
-            std::cout << "recv: " << len << std::endl;
+           // std::cout << "recv: " << len << std::endl;
             input_buffer_.add_data(buffer, len);
             return IOEvent::DATA;
         }
@@ -39,13 +39,13 @@ Connection::Connection(int fd)
     {
         size_t len = output_buffer_.read_able_bytes();
 
-        std::cout << "try send" << len << std::endl;
+       // std::cout << "try send" << len << std::endl;
         if (len == 0)
             return true;
 
         ssize_t send_n = send(fd_, output_buffer_.get(), len, 0);
 
-        std::cout << "actual send:" << send_n << std::endl;
+        //std::cout << "actual send:" << send_n << std::endl;
         if (send_n == -1)
         {
             if(errno==EAGAIN||errno==EWOULDBLOCK)

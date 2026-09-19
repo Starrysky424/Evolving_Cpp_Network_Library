@@ -11,8 +11,6 @@ file(REMOVE_RECURSE
   "CMakeFiles/network_lib.dir/src/EpollerPoller.cpp.o.d"
   "CMakeFiles/network_lib.dir/src/EventLoop.cpp.o"
   "CMakeFiles/network_lib.dir/src/EventLoop.cpp.o.d"
-  "CMakeFiles/network_lib.dir/src/SelectPoller.cpp.o"
-  "CMakeFiles/network_lib.dir/src/SelectPoller.cpp.o.d"
   "CMakeFiles/network_lib.dir/src/SocketListener.cpp.o"
   "CMakeFiles/network_lib.dir/src/SocketListener.cpp.o.d"
   "libnetwork_lib.a"

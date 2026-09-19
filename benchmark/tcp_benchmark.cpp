@@ -63,17 +63,21 @@ static bool send_all(int fd, const void *data, size_t len)
 // 发送：4字节长度 + 消息内容
 static bool send_message(int fd, const std::string &message)
 {
-    uint32_t length = htonl(
-        static_cast<uint32_t>(message.size()));
+    uint32_t length = htonl(static_cast<uint32_t>(message.size()));
 
-    if (!send_all(fd, &length, sizeof(length)))
-        return false;
+    std::vector<char> packet(sizeof(length) + message.size());
 
-    if (!message.empty() &&
-        !send_all(fd, message.data(), message.size()))
-        return false;
+    std::memcpy(packet.data(),
+                &length,
+                sizeof(length));
 
-    return true;
+    std::memcpy(packet.data() + sizeof(length),
+                message.data(),
+                message.size());
+
+    return send_all(fd,
+                    packet.data(),
+                    packet.size());
 }
 
 // 接收完整的一条消息

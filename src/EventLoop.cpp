@@ -58,9 +58,9 @@ EventLoop::EventLoop(int server_fd)
 
         if (event==IOEvent::CLOSE || event==IOEvent::ERROR)
         {
-            std::cout << "server close fd: " << fd
-                      << ", event: " << static_cast<int>(event)
-                      << std::endl;
+            // std::cout << "server close fd: " << fd
+            //           << ", event: " << static_cast<int>(event)
+            //           << std::endl;
             connectionManager_.delete_connection(fd);
             epollPoller_.remove_fd(fd);
             close(fd);

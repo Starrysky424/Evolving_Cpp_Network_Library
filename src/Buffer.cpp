@@ -17,6 +17,24 @@
         if (len > read_able_bytes())
             len = read_able_bytes();
         read_index_ += len;
+
+        //所以数据已发送完
+        if(read_index_==buffer_.size())
+        {
+            buffer_.clear();
+            read_index_ = 0;
+            return;
+        }
+
+        //前面已积累较多数据，一次性compact
+        constexpr size_t COMPACT_THRESHOLD = 4096;
+        if(read_index_>=COMPACT_THRESHOLD)
+        {
+            buffer_.erase(
+                buffer_.begin(),
+                buffer_.begin() + read_index_);
+            read_index_ = 0;
+        }
     }
 
     size_t Buffer::read_able_bytes()const

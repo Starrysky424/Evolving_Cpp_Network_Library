@@ -24,3 +24,4 @@ target_link_libraries(main network_lib pthread)
 
 
 add_subdirectory(benchmark)
+add_subdirectory(test)

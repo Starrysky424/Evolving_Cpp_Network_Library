@@ -87,14 +87,14 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/starrysky/evolvingcnetworklibrary/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/starrysky/evolvingcnetworklibrary/build/CMakeFiles /home/starrysky/evolvingcnetworklibrary/build/benchmark//CMakeFiles/progress.marks
-	cd /home/starrysky/evolvingcnetworklibrary/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 benchmark/all
+	cd /home/starrysky/evolvingcnetworklibrary/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/starrysky/evolvingcnetworklibrary/build/CMakeFiles /home/starrysky/evolvingcnetworklibrary/build/test//CMakeFiles/progress.marks
+	cd /home/starrysky/evolvingcnetworklibrary/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/starrysky/evolvingcnetworklibrary/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/starrysky/evolvingcnetworklibrary/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 benchmark/clean
+	cd /home/starrysky/evolvingcnetworklibrary/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/clean
 .PHONY : clean
 
 # The main clean target
@@ -103,12 +103,12 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/starrysky/evolvingcnetworklibrary/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 benchmark/preinstall
+	cd /home/starrysky/evolvingcnetworklibrary/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/starrysky/evolvingcnetworklibrary/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 benchmark/preinstall
+	cd /home/starrysky/evolvingcnetworklibrary/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
@@ -117,42 +117,42 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
-benchmark/CMakeFiles/tcp_benchmark.dir/rule:
-	cd /home/starrysky/evolvingcnetworklibrary/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 benchmark/CMakeFiles/tcp_benchmark.dir/rule
-.PHONY : benchmark/CMakeFiles/tcp_benchmark.dir/rule
+test/CMakeFiles/test_buffer.dir/rule:
+	cd /home/starrysky/evolvingcnetworklibrary/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/test_buffer.dir/rule
+.PHONY : test/CMakeFiles/test_buffer.dir/rule
 
 # Convenience name for target.
-tcp_benchmark: benchmark/CMakeFiles/tcp_benchmark.dir/rule
-.PHONY : tcp_benchmark
+test_buffer: test/CMakeFiles/test_buffer.dir/rule
+.PHONY : test_buffer
 
 # fast build rule for target.
-tcp_benchmark/fast:
-	cd /home/starrysky/evolvingcnetworklibrary/build && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/tcp_benchmark.dir/build.make benchmark/CMakeFiles/tcp_benchmark.dir/build
-.PHONY : tcp_benchmark/fast
+test_buffer/fast:
+	cd /home/starrysky/evolvingcnetworklibrary/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_buffer.dir/build.make test/CMakeFiles/test_buffer.dir/build
+.PHONY : test_buffer/fast
 
-tcp_benchmark.o: tcp_benchmark.cpp.o
-.PHONY : tcp_benchmark.o
+test_buffer.o: test_buffer.cpp.o
+.PHONY : test_buffer.o
 
 # target to build an object file
-tcp_benchmark.cpp.o:
-	cd /home/starrysky/evolvingcnetworklibrary/build && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/tcp_benchmark.dir/build.make benchmark/CMakeFiles/tcp_benchmark.dir/tcp_benchmark.cpp.o
-.PHONY : tcp_benchmark.cpp.o
+test_buffer.cpp.o:
+	cd /home/starrysky/evolvingcnetworklibrary/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_buffer.dir/build.make test/CMakeFiles/test_buffer.dir/test_buffer.cpp.o
+.PHONY : test_buffer.cpp.o
 
-tcp_benchmark.i: tcp_benchmark.cpp.i
-.PHONY : tcp_benchmark.i
+test_buffer.i: test_buffer.cpp.i
+.PHONY : test_buffer.i
 
 # target to preprocess a source file
-tcp_benchmark.cpp.i:
-	cd /home/starrysky/evolvingcnetworklibrary/build && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/tcp_benchmark.dir/build.make benchmark/CMakeFiles/tcp_benchmark.dir/tcp_benchmark.cpp.i
-.PHONY : tcp_benchmark.cpp.i
+test_buffer.cpp.i:
+	cd /home/starrysky/evolvingcnetworklibrary/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_buffer.dir/build.make test/CMakeFiles/test_buffer.dir/test_buffer.cpp.i
+.PHONY : test_buffer.cpp.i
 
-tcp_benchmark.s: tcp_benchmark.cpp.s
-.PHONY : tcp_benchmark.s
+test_buffer.s: test_buffer.cpp.s
+.PHONY : test_buffer.s
 
 # target to generate assembly for a file
-tcp_benchmark.cpp.s:
-	cd /home/starrysky/evolvingcnetworklibrary/build && $(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/tcp_benchmark.dir/build.make benchmark/CMakeFiles/tcp_benchmark.dir/tcp_benchmark.cpp.s
-.PHONY : tcp_benchmark.cpp.s
+test_buffer.cpp.s:
+	cd /home/starrysky/evolvingcnetworklibrary/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_buffer.dir/build.make test/CMakeFiles/test_buffer.dir/test_buffer.cpp.s
+.PHONY : test_buffer.cpp.s
 
 # Help Target
 help:
@@ -162,10 +162,10 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... tcp_benchmark"
-	@echo "... tcp_benchmark.o"
-	@echo "... tcp_benchmark.i"
-	@echo "... tcp_benchmark.s"
+	@echo "... test_buffer"
+	@echo "... test_buffer.o"
+	@echo "... test_buffer.i"
+	@echo "... test_buffer.s"
 .PHONY : help
 
 

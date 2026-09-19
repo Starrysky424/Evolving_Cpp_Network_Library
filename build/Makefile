@@ -143,17 +143,30 @@ main/fast:
 .PHONY : main/fast
 
 #=============================================================================
-# Target rules for targets named client
+# Target rules for targets named tcp_benchmark
 
 # Build rule for target.
-client: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 client
-.PHONY : client
+tcp_benchmark: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tcp_benchmark
+.PHONY : tcp_benchmark
 
 # fast build rule for target.
-client/fast:
-	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/client.dir/build.make benchmark/CMakeFiles/client.dir/build
-.PHONY : client/fast
+tcp_benchmark/fast:
+	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/tcp_benchmark.dir/build.make benchmark/CMakeFiles/tcp_benchmark.dir/build
+.PHONY : tcp_benchmark/fast
+
+#=============================================================================
+# Target rules for targets named test_buffer
+
+# Build rule for target.
+test_buffer: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_buffer
+.PHONY : test_buffer
+
+# fast build rule for target.
+test_buffer/fast:
+	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_buffer.dir/build.make test/CMakeFiles/test_buffer.dir/build
+.PHONY : test_buffer/fast
 
 src/Buffer.o: src/Buffer.cpp.o
 .PHONY : src/Buffer.o
@@ -299,30 +312,6 @@ src/EventLoop.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/network_lib.dir/build.make CMakeFiles/network_lib.dir/src/EventLoop.cpp.s
 .PHONY : src/EventLoop.cpp.s
 
-src/SelectPoller.o: src/SelectPoller.cpp.o
-.PHONY : src/SelectPoller.o
-
-# target to build an object file
-src/SelectPoller.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/network_lib.dir/build.make CMakeFiles/network_lib.dir/src/SelectPoller.cpp.o
-.PHONY : src/SelectPoller.cpp.o
-
-src/SelectPoller.i: src/SelectPoller.cpp.i
-.PHONY : src/SelectPoller.i
-
-# target to preprocess a source file
-src/SelectPoller.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/network_lib.dir/build.make CMakeFiles/network_lib.dir/src/SelectPoller.cpp.i
-.PHONY : src/SelectPoller.cpp.i
-
-src/SelectPoller.s: src/SelectPoller.cpp.s
-.PHONY : src/SelectPoller.s
-
-# target to generate assembly for a file
-src/SelectPoller.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/network_lib.dir/build.make CMakeFiles/network_lib.dir/src/SelectPoller.cpp.s
-.PHONY : src/SelectPoller.cpp.s
-
 src/SocketListener.o: src/SocketListener.cpp.o
 .PHONY : src/SocketListener.o
 
@@ -379,9 +368,10 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... client"
 	@echo "... main"
 	@echo "... network_lib"
+	@echo "... tcp_benchmark"
+	@echo "... test_buffer"
 	@echo "... src/Buffer.o"
 	@echo "... src/Buffer.i"
 	@echo "... src/Buffer.s"
@@ -400,9 +390,6 @@ help:
 	@echo "... src/EventLoop.o"
 	@echo "... src/EventLoop.i"
 	@echo "... src/EventLoop.s"
-	@echo "... src/SelectPoller.o"
-	@echo "... src/SelectPoller.i"
-	@echo "... src/SelectPoller.s"
 	@echo "... src/SocketListener.o"
 	@echo "... src/SocketListener.i"
 	@echo "... src/SocketListener.s"
