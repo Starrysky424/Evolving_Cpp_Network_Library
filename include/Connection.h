@@ -1,5 +1,5 @@
 #pragma once
-
+#include<sys/epoll.h>
 #include"Buffer.h"
 #include "IOEvent.h"
 #include"Decoder.h"
@@ -26,10 +26,14 @@ class Connection
         //解析一条完整通知
         bool decode_message(std::string &message);
 
+        void enable_write();
+
+        void disable_write();
+
     private:
         int fd_;
         Buffer input_buffer_;
-
+        uint32_t events_{EPOLLIN};
         Buffer output_buffer_;
         Decoder decoder_;
 };

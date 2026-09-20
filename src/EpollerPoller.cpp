@@ -43,15 +43,23 @@ void EpollPoller:: remove_fd(int fd)
         throw std::runtime_error("epoll_ctl delete failed");
     }
 }
+
 int EpollPoller:: wait(int timeout)
 {
-    int n = epoll_wait(epoll_fd_, ready_events_.data(), ready_events_.size(), timeout);
 
-    if(n==-1)
+    int n;
+    while(true)
     {
-        throw std::runtime_error("epoll_wait failed");
-
+        n = epoll_wait(epoll_fd_, ready_events_.data(), ready_events_.size(), timeout);
+        if (n < 0)
+        {
+            if(errno==EINTR)
+                continue;
+            throw std::runtime_error("epoll_wait failed");
+        }
+        break;
     }
+
     return n;
 }
 

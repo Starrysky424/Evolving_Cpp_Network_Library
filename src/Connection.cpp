@@ -77,4 +77,14 @@ Connection::Connection(int fd)
     {
         return decoder_.decode(input_buffer_, message);
     }
+
+
+    void Connection::enable_write()
+    {
+        if(!(events_&EPOLLOUT))
+        {
+            events_ |= EPOLLOUT;
+            
+        }
+    }
     // 此类的核心思想是将一个客户端连接对应的fd，recv，send，以及连接该数据的Buffer封装到一起，一个Connection就表示一个客户端连接
