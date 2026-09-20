@@ -130,6 +130,34 @@ test_buffer/fast:
 	cd /home/starrysky/evolvingcnetworklibrary/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_buffer.dir/build.make test/CMakeFiles/test_buffer.dir/build
 .PHONY : test_buffer/fast
 
+# Convenience name for target.
+test/CMakeFiles/test_decoder.dir/rule:
+	cd /home/starrysky/evolvingcnetworklibrary/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/test_decoder.dir/rule
+.PHONY : test/CMakeFiles/test_decoder.dir/rule
+
+# Convenience name for target.
+test_decoder: test/CMakeFiles/test_decoder.dir/rule
+.PHONY : test_decoder
+
+# fast build rule for target.
+test_decoder/fast:
+	cd /home/starrysky/evolvingcnetworklibrary/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_decoder.dir/build.make test/CMakeFiles/test_decoder.dir/build
+.PHONY : test_decoder/fast
+
+# Convenience name for target.
+test/CMakeFiles/test_connection_manager.dir/rule:
+	cd /home/starrysky/evolvingcnetworklibrary/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/test_connection_manager.dir/rule
+.PHONY : test/CMakeFiles/test_connection_manager.dir/rule
+
+# Convenience name for target.
+test_connection_manager: test/CMakeFiles/test_connection_manager.dir/rule
+.PHONY : test_connection_manager
+
+# fast build rule for target.
+test_connection_manager/fast:
+	cd /home/starrysky/evolvingcnetworklibrary/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_connection_manager.dir/build.make test/CMakeFiles/test_connection_manager.dir/build
+.PHONY : test_connection_manager/fast
+
 test_buffer.o: test_buffer.cpp.o
 .PHONY : test_buffer.o
 
@@ -154,6 +182,54 @@ test_buffer.cpp.s:
 	cd /home/starrysky/evolvingcnetworklibrary/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_buffer.dir/build.make test/CMakeFiles/test_buffer.dir/test_buffer.cpp.s
 .PHONY : test_buffer.cpp.s
 
+test_connection_manager.o: test_connection_manager.cpp.o
+.PHONY : test_connection_manager.o
+
+# target to build an object file
+test_connection_manager.cpp.o:
+	cd /home/starrysky/evolvingcnetworklibrary/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_connection_manager.dir/build.make test/CMakeFiles/test_connection_manager.dir/test_connection_manager.cpp.o
+.PHONY : test_connection_manager.cpp.o
+
+test_connection_manager.i: test_connection_manager.cpp.i
+.PHONY : test_connection_manager.i
+
+# target to preprocess a source file
+test_connection_manager.cpp.i:
+	cd /home/starrysky/evolvingcnetworklibrary/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_connection_manager.dir/build.make test/CMakeFiles/test_connection_manager.dir/test_connection_manager.cpp.i
+.PHONY : test_connection_manager.cpp.i
+
+test_connection_manager.s: test_connection_manager.cpp.s
+.PHONY : test_connection_manager.s
+
+# target to generate assembly for a file
+test_connection_manager.cpp.s:
+	cd /home/starrysky/evolvingcnetworklibrary/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_connection_manager.dir/build.make test/CMakeFiles/test_connection_manager.dir/test_connection_manager.cpp.s
+.PHONY : test_connection_manager.cpp.s
+
+test_decoder.o: test_decoder.cpp.o
+.PHONY : test_decoder.o
+
+# target to build an object file
+test_decoder.cpp.o:
+	cd /home/starrysky/evolvingcnetworklibrary/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_decoder.dir/build.make test/CMakeFiles/test_decoder.dir/test_decoder.cpp.o
+.PHONY : test_decoder.cpp.o
+
+test_decoder.i: test_decoder.cpp.i
+.PHONY : test_decoder.i
+
+# target to preprocess a source file
+test_decoder.cpp.i:
+	cd /home/starrysky/evolvingcnetworklibrary/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_decoder.dir/build.make test/CMakeFiles/test_decoder.dir/test_decoder.cpp.i
+.PHONY : test_decoder.cpp.i
+
+test_decoder.s: test_decoder.cpp.s
+.PHONY : test_decoder.s
+
+# target to generate assembly for a file
+test_decoder.cpp.s:
+	cd /home/starrysky/evolvingcnetworklibrary/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_decoder.dir/build.make test/CMakeFiles/test_decoder.dir/test_decoder.cpp.s
+.PHONY : test_decoder.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -163,9 +239,17 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... test_buffer"
+	@echo "... test_connection_manager"
+	@echo "... test_decoder"
 	@echo "... test_buffer.o"
 	@echo "... test_buffer.i"
 	@echo "... test_buffer.s"
+	@echo "... test_connection_manager.o"
+	@echo "... test_connection_manager.i"
+	@echo "... test_connection_manager.s"
+	@echo "... test_decoder.o"
+	@echo "... test_decoder.i"
+	@echo "... test_decoder.s"
 .PHONY : help
 
 

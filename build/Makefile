@@ -168,6 +168,32 @@ test_buffer/fast:
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_buffer.dir/build.make test/CMakeFiles/test_buffer.dir/build
 .PHONY : test_buffer/fast
 
+#=============================================================================
+# Target rules for targets named test_decoder
+
+# Build rule for target.
+test_decoder: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_decoder
+.PHONY : test_decoder
+
+# fast build rule for target.
+test_decoder/fast:
+	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_decoder.dir/build.make test/CMakeFiles/test_decoder.dir/build
+.PHONY : test_decoder/fast
+
+#=============================================================================
+# Target rules for targets named test_connection_manager
+
+# Build rule for target.
+test_connection_manager: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_connection_manager
+.PHONY : test_connection_manager
+
+# fast build rule for target.
+test_connection_manager/fast:
+	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_connection_manager.dir/build.make test/CMakeFiles/test_connection_manager.dir/build
+.PHONY : test_connection_manager/fast
+
 src/Buffer.o: src/Buffer.cpp.o
 .PHONY : src/Buffer.o
 
@@ -372,6 +398,8 @@ help:
 	@echo "... network_lib"
 	@echo "... tcp_benchmark"
 	@echo "... test_buffer"
+	@echo "... test_connection_manager"
+	@echo "... test_decoder"
 	@echo "... src/Buffer.o"
 	@echo "... src/Buffer.i"
 	@echo "... src/Buffer.s"

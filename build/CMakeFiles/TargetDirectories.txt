@@ -6,5 +6,7 @@
 /home/starrysky/evolvingcnetworklibrary/build/benchmark/CMakeFiles/edit_cache.dir
 /home/starrysky/evolvingcnetworklibrary/build/benchmark/CMakeFiles/rebuild_cache.dir
 /home/starrysky/evolvingcnetworklibrary/build/test/CMakeFiles/test_buffer.dir
+/home/starrysky/evolvingcnetworklibrary/build/test/CMakeFiles/test_decoder.dir
+/home/starrysky/evolvingcnetworklibrary/build/test/CMakeFiles/test_connection_manager.dir
 /home/starrysky/evolvingcnetworklibrary/build/test/CMakeFiles/edit_cache.dir
 /home/starrysky/evolvingcnetworklibrary/build/test/CMakeFiles/rebuild_cache.dir

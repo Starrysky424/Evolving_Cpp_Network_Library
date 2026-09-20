@@ -126,4 +126,6 @@ set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/main.dir/DependInfo.cmake"
   "benchmark/CMakeFiles/tcp_benchmark.dir/DependInfo.cmake"
   "test/CMakeFiles/test_buffer.dir/DependInfo.cmake"
+  "test/CMakeFiles/test_decoder.dir/DependInfo.cmake"
+  "test/CMakeFiles/test_connection_manager.dir/DependInfo.cmake"
   )

@@ -1,0 +1,1 @@
+/usr/bin/c++  -O2 -g CMakeFiles/test_decoder.dir/test_decoder.cpp.o -o test_decoder  ../libnetwork_lib.a -lpthread 
