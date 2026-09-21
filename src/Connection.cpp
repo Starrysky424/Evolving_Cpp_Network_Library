@@ -11,50 +11,71 @@ Connection::Connection(int fd)
 
     IOEvent Connection::recv_data()
     {
-        char buffer[1024]{};
-        int len = recv(fd_, buffer, sizeof(buffer) - 1, 0);
-
-        if(len>0)
+        char buffer[4096]{};
+        bool received = false;
+        while (true)
         {
-           // std::cout << "recv: " << len << std::endl;
-            input_buffer_.add_data(buffer, len);
+            int len = recv(fd_, buffer, sizeof(buffer) - 1, 0);
+
+            if (len > 0)
+            {
+                // std::cout << "recv: " << len << std::endl;
+                input_buffer_.add_data(buffer, len);
+                received = true;
+                continue;
+            }
+
+            else if (len == 0)
+            {
+                std::cout << "close client" << std::endl;
+                return IOEvent::CLOSE;
+            }
+
+            if (errno == EAGAIN || errno == EWOULDBLOCK)
+            {
+                break;
+            }
+            perror("recv");
+            return IOEvent::ERROR;
+        }
+
+        if(received)
             return IOEvent::DATA;
-        }
 
-        else if(len==0)
-        {
-            std::cout << "close client" << std::endl;
-            return IOEvent::CLOSE;
-        }
-
-        if(errno==EAGAIN || errno==EWOULDBLOCK)
-        {
-            return IOEvent::NONE;
-        }
-        perror("recv");
-        return IOEvent::ERROR;
+        return IOEvent::NONE;
     }
 
     bool Connection:: send_data()
     {
-        size_t len = output_buffer_.read_able_bytes();
+        while (output_buffer_.read_able_bytes()>0)
+        {
+            ssize_t send_n = send(fd_, output_buffer_.get(), output_buffer_.read_able_bytes(), 0);
 
-       // std::cout << "try send" << len << std::endl;
-        if (len == 0)
+            if(send_n>0)
+            {
+                output_buffer_.fetch(send_n);
+                continue;
+            }
+
+            if (send_n == -1)
+            {
+                if (errno == EAGAIN || errno == EWOULDBLOCK)
+                    return true;
+
+                if(errno==EINTR)
+                    continue;
+                    
+                perror("send");
+                return false;
+            }
+        }
             return true;
 
-        ssize_t send_n = send(fd_, output_buffer_.get(), len, 0);
+       
 
         //std::cout << "actual send:" << send_n << std::endl;
-        if (send_n == -1)
-        {
-            if(errno==EAGAIN||errno==EWOULDBLOCK)
-                return true;
-            perror("send");
-            return false;
-        }
-        output_buffer_.fetch(send_n);
-        return true;
+       
+        
     }
 
     int Connection::fd() const

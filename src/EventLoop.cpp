@@ -15,34 +15,40 @@ EventLoop::EventLoop(int server_fd)
     // 有新客户端连接
     void EventLoop::accept_new_connection()
     {
-        sockaddr_in client_addr{};
-        socklen_t client_len = sizeof(client_addr);
-
-        int client_fd = accept(
-            server_fd_, (sockaddr *)&client_addr, &client_len);
-
-        if (client_fd == -1)
+        
+        while(true)
         {
-            perror("accept");
-            return;
+            sockaddr_in client_addr{};
+            socklen_t client_len = sizeof(client_addr);
+
+            int client_fd = accept(
+                server_fd_, (sockaddr *)&client_addr, &client_len);
+
+            if (client_fd == -1)
+            {
+                if(errno==EAGAIN || errno==EWOULDBLOCK)
+                    break;
+                perror("accept");
+                break;
+            }
+            // 设置非阻塞
+            int flags = fcntl(client_fd, F_GETFL, 0);
+
+            if (flags == -1)
+            {
+                close(client_fd);
+                return;
+            }
+
+            fcntl(client_fd, F_SETFL, flags | O_NONBLOCK);
+
+            epollPoller_.add_fd(client_fd);
+            connectionManager_.add_connection(client_fd);
+
+            std::cout << "new client:" << client_fd << std::endl;
         }
-
-        //设置非阻塞
-        int flags = fcntl(client_fd, F_GETFL, 0);
-
-        if(flags==-1)
-        {
-            perror("fcntl");
-            close(client_fd);
-            return;
-        }
-
-        fcntl(client_fd, F_SETFL, flags | O_NONBLOCK);
-
-        epollPoller_.add_fd(client_fd);
-        connectionManager_.add_connection(client_fd);
-
-        std::cout << "new client:" << client_fd << std::endl;
+       
+       
     }
 
     //处理客户端

@@ -5,7 +5,7 @@
 #include"ConnectionManager.h"
 #include"Event.h"
 #include<string>
-    
+#include"TimerQueue.h"
 
     using ClientMessageCallback = std::function<void(Connection&,const std::string&)>;
     class EventLoop
@@ -31,4 +31,5 @@
         ConnectionManager connectionManager_;
 
         ClientMessageCallback message_callback_;
+        TimerQueue 
     };
