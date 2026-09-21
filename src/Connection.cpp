@@ -79,12 +79,28 @@ Connection::Connection(int fd)
     }
 
 
-    void Connection::enable_write()
+   bool Connection::enable_write()
     {
         if(!(events_&EPOLLOUT))
         {
             events_ |= EPOLLOUT;
-            
+            return true;
         }
+        return false;
+    }
+
+    uint32_t Connection::events()const
+    {
+        return events_;
+    }
+
+    bool Connection::disable_write()
+    {
+        if(events_ & EPOLLOUT)
+        {
+            events_ &= ~EPOLLOUT;
+            return true;
+        }
+        return false;
     }
     // 此类的核心思想是将一个客户端连接对应的fd，recv，send，以及连接该数据的Buffer封装到一起，一个Connection就表示一个客户端连接

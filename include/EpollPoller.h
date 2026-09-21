@@ -2,7 +2,7 @@
 
 #include<sys/epoll.h>
 #include<vector>
-
+#include<unordered_map>
 class EpollPoller
 {
     public:
@@ -20,4 +20,6 @@ class EpollPoller
     private:
         int epoll_fd_;
         std::vector<epoll_event> ready_events_;
+
+        std::unordered_map<int, uint32_t> fd_events_;
 };

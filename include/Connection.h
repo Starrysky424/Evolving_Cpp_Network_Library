@@ -26,9 +26,11 @@ class Connection
         //解析一条完整通知
         bool decode_message(std::string &message);
 
-        void enable_write();
+       bool enable_write();
 
-        void disable_write();
+        bool disable_write();
+
+        uint32_t events() const;
 
     private:
         int fd_;

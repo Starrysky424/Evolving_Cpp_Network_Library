@@ -87,7 +87,11 @@ EventLoop::EventLoop(int server_fd)
 
             if(client->output_buffer().read_able_bytes()>0)
             {
-                epollPoller_.modify_fd(fd, EPOLLIN | EPOLLOUT);
+               if(client->enable_write()){
+                   epollPoller_.modify_fd(fd, client->events());
+               }
+
+              
             }
            
         }
@@ -139,7 +143,11 @@ void EventLoop::run()
 
                 if(client->output_buffer().read_able_bytes()==0)
                 {
-                    epollPoller_.modify_fd(event.fd, EPOLLIN);
+                    if(client->disable_write())
+                    {
+                        epollPoller_.modify_fd(event.fd, client->events());
+                    }
+                    
                 }
 
             }

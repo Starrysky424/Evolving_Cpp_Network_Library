@@ -21,10 +21,17 @@ void EpollPoller::add_fd(int fd)
     {
         throw std::runtime_error("epoll_ctl add failed");
     }
+    fd_events_[fd] = EPOLLIN;
 }
 
 void EpollPoller::modify_fd(int fd, uint32_t events)
 {
+
+    auto it = fd_events_.find(fd);
+
+    if(it!=fd_events_.end()&&it->second==events)
+        return;
+
     epoll_event event{};
 
     event.events = events;
@@ -34,6 +41,7 @@ void EpollPoller::modify_fd(int fd, uint32_t events)
     {
         throw std::runtime_error("epoll_ctl modfiy failed");
     }
+    fd_events_[fd] = events;
 }
 
 void EpollPoller:: remove_fd(int fd)
@@ -42,6 +50,8 @@ void EpollPoller:: remove_fd(int fd)
     {
         throw std::runtime_error("epoll_ctl delete failed");
     }
+
+    fd_events_.erase(fd);
 }
 
 int EpollPoller:: wait(int timeout)
