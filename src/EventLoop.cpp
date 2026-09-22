@@ -6,10 +6,12 @@
 #include <arpa/inet.h>
 #include <sys/select.h>
 #include<fcntl.h>
+#include"logger.h"
 EventLoop::EventLoop(int server_fd)
     : server_fd_(server_fd)
     {
         epollPoller_.add_fd(server_fd_);
+        LOG_INFO("TCP server initialized");
     }
 
     // 有新客户端连接

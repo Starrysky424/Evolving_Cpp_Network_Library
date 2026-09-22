@@ -31,5 +31,5 @@
         ConnectionManager connectionManager_;
 
         ClientMessageCallback message_callback_;
-        TimerQueue 
+        
     };
