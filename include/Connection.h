@@ -3,6 +3,8 @@
 #include"Buffer.h"
 #include "IOEvent.h"
 #include"Decoder.h"
+#include <chrono>
+
 class Connection
 {
 
@@ -32,10 +34,15 @@ class Connection
 
         uint32_t events() const;
 
+        //获取最近一次活动时间
+        std::chrono::steady_clock::time_point getLastActiveTime() const;
+
     private:
         int fd_;
         Buffer input_buffer_;
         uint32_t events_{EPOLLIN};
         Buffer output_buffer_;
         Decoder decoder_;
+
+        std::chrono::steady_clock::time_point last_active_time_;
 };

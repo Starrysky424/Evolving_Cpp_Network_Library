@@ -7,12 +7,16 @@
 #include <sys/select.h>
 #include<fcntl.h>
 #include"logger.h"
+
 EventLoop::EventLoop(int server_fd)
-    : server_fd_(server_fd)
-    {
-        epollPoller_.add_fd(server_fd_);
-        LOG_INFO("TCP server initialized");
-    }
+    : server_fd_(server_fd),
+      timer_queue_(this)
+{
+    epollPoller_.add_fd(server_fd_);
+
+    epollPoller_.add_fd(timer_queue_.getTimerFd());
+    LOG_INFO("TCP server initialized");
+}
 
     // 有新客户端连接
     void EventLoop::accept_new_connection()
@@ -140,6 +144,11 @@ void EventLoop::run()
                 handle_client_event(event.fd);
             }
 
+            else if(event.type==EventType::TIMER)
+            {
+                timer_queue_.handleRead();
+            }
+
             else if(event.type==EventType::WRITE)
             {
                 Connection *client = connectionManager_.get_connection(event.fd);
@@ -174,9 +183,15 @@ std::vector<Event> EventLoop:: get_events(int n)
     {
         int fd = ready_events[i].data.fd;
         uint32_t revents = ready_events[i].events;
+
         if (fd == server_fd_)
         {
             events.emplace_back(fd, EventType::NEW_CONNECTION);
+        }
+
+        else if(fd==timer_queue_.getTimerFd())
+        {
+            events.emplace_back(fd, EventType::TIMER);
         }
 
         else
@@ -198,4 +213,14 @@ std::vector<Event> EventLoop:: get_events(int n)
 void EventLoop:: set_message_callback(ClientMessageCallback callback)
 {
     message_callback_ = callback;
+}
+
+void EventLoop:: runAfter(std::chrono::milliseconds delay, TimerQueue::TimerCallback cb)
+{
+    timer_queue_.addTimer(std::move(cb), std::chrono::steady_clock::now() + delay, std::chrono::milliseconds(0));
+}
+
+void EventLoop:: runEvery(std::chrono::milliseconds interval, TimerQueue::TimerCallback cb)
+{
+    timer_queue_.addTimer(std::move(cb), std::chrono::steady_clock::now() + interval, interval);
 }

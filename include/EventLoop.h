@@ -19,6 +19,10 @@
        
         void set_message_callback(ClientMessageCallback callback);
 
+        void runAfter(std::chrono::milliseconds delay, TimerQueue::TimerCallback cb);
+
+        void runEvery(std::chrono::milliseconds interval, TimerQueue::TimerCallback cb);
+
     private:
         void accept_new_connection();
         void handle_client_event(int fd);
@@ -31,5 +35,5 @@
         ConnectionManager connectionManager_;
 
         ClientMessageCallback message_callback_;
-        
+        TimerQueue timer_queue_;
     };

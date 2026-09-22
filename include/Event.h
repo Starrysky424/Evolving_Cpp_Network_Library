@@ -8,6 +8,8 @@ enum class EventType
 
     WRITE, //写事件
 
+    TIMER, //定时器事件
+
     CLOSE  //关闭
 };
 

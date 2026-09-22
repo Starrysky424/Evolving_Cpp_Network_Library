@@ -5,7 +5,8 @@
 #include <cerrno>
 // 构造函数
 Connection::Connection(int fd)
-    : fd_(fd)
+    : fd_(fd),
+     last_active_time_(std::chrono::steady_clock::now())
 {
 }
 
@@ -21,6 +22,7 @@ Connection::Connection(int fd)
             {
                 // std::cout << "recv: " << len << std::endl;
                 input_buffer_.add_data(buffer, len);
+                last_active_time_ = std::chrono::steady_clock::now();
                 received = true;
                 continue;
             }
@@ -123,5 +125,11 @@ Connection::Connection(int fd)
             return true;
         }
         return false;
+    }
+
+    std::chrono::steady_clock::time_point
+    Connection::getLastActiveTime() const
+    {
+        return last_active_time_;
     }
     // 此类的核心思想是将一个客户端连接对应的fd，recv，send，以及连接该数据的Buffer封装到一起，一个Connection就表示一个客户端连接

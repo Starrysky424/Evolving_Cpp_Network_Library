@@ -17,6 +17,8 @@ class ConnectionManager
 
         bool has_connection(int fd) const;
 
+
+        
     private:
         std::unordered_map<int, Connection> connections_;
 };
