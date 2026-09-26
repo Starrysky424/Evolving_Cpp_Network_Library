@@ -29,6 +29,8 @@
 
         std::vector<Event> get_events(int n);
 
+        void startIdleTimeout();
+
     private:
         int server_fd_;
         EpollPoller epollPoller_;

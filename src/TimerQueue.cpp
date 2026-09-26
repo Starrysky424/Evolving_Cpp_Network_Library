@@ -93,10 +93,11 @@ void TimerQueue:: handleRead()
             heap_.push(std::move(timer));
         }
 
-        if(!heap_.empty())
-        {
-            resetTimerfd(heap_.top().when);
-        }
+        
+    }
+    if (!heap_.empty())
+    {
+        resetTimerfd(heap_.top().when);
     }
 }
 

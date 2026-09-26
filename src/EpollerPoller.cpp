@@ -1,6 +1,7 @@
 #include"EpollPoller.h"
 #include<unistd.h>
 #include<stdexcept>
+#include"logger.h"
 EpollPoller::EpollPoller()
 {
     epoll_fd_ = epoll_create1(0);
@@ -19,6 +20,11 @@ void EpollPoller::add_fd(int fd)
     event.data.fd = fd;
     if(epoll_ctl(epoll_fd_,EPOLL_CTL_ADD,fd,&event)==-1)
     {
+        LOG_ERROR(
+            "epoll_ctl ADD failed, fd=%d, errno=%d, error=%s",
+            fd,
+            errno,
+            strerror(errno));
         throw std::runtime_error("epoll_ctl add failed");
     }
     fd_events_[fd] = EPOLLIN;

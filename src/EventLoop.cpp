@@ -7,14 +7,18 @@
 #include <sys/select.h>
 #include<fcntl.h>
 #include"logger.h"
-
+#include<chrono>
+#include"Connection.h"
 EventLoop::EventLoop(int server_fd)
     : server_fd_(server_fd),
-      timer_queue_(this)
+      timer_queue_(this),
+      connectionManager_(&epollPoller_)
 {
     epollPoller_.add_fd(server_fd_);
 
     epollPoller_.add_fd(timer_queue_.getTimerFd());
+
+    startIdleTimeout();
     LOG_INFO("TCP server initialized");
 }
 
@@ -48,9 +52,12 @@ EventLoop::EventLoop(int server_fd)
 
             fcntl(client_fd, F_SETFL, flags | O_NONBLOCK);
 
-            epollPoller_.add_fd(client_fd);
             connectionManager_.add_connection(client_fd);
+            
+            Connection *client =
+                connectionManager_.get_connection(client_fd);
 
+            client->setMessageCallback(message_callback_);
             std::cout << "new client:" << client_fd << std::endl;
         }
        
@@ -74,29 +81,11 @@ EventLoop::EventLoop(int server_fd)
             //           << ", event: " << static_cast<int>(event)
             //           << std::endl;
             connectionManager_.delete_connection(fd);
-            epollPoller_.remove_fd(fd);
-            close(fd);
-            
+           
         }
 
         else  if(event==IOEvent::DATA)
         {
-           
-            if (message_callback_)
-            {
-                std::string message;
-
-                while (client->decode_message(message))
-                {
-                    message_callback_(*client,
-                                      message);
-
-                    message.clear();
-                }
-                
-               
-            }
-
             if(client->output_buffer().read_able_bytes()>0)
             {
                if(client->enable_write()){
@@ -223,4 +212,36 @@ void EventLoop:: runAfter(std::chrono::milliseconds delay, TimerQueue::TimerCall
 void EventLoop:: runEvery(std::chrono::milliseconds interval, TimerQueue::TimerCallback cb)
 {
     timer_queue_.addTimer(std::move(cb), std::chrono::steady_clock::now() + interval, interval);
+}
+
+void EventLoop::startIdleTimeout()
+{
+    runEvery(
+        std::chrono::seconds(5),
+        [this]()
+        {
+            auto now = std::chrono::steady_clock::now();
+            auto timeout = std::chrono::seconds(60);
+
+            std::vector<int> expired_fds;
+
+            connectionManager_.forEachConn(
+                [&](Connection *conn)
+                {
+                    if(now-conn->getLastActiveTime()>timeout)
+                    {
+                        LOG_INFO(
+                            "[IdleTimeout] fd:%d idle timeout, close",
+                            conn->fd());
+
+                        expired_fds.push_back(conn->fd());
+                    }
+                });
+            
+            for(int fd:expired_fds)
+            {
+                connectionManager_.delete_connection(fd);
+
+            }
+        });
 }

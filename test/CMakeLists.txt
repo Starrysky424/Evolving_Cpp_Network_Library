@@ -26,3 +26,14 @@ target_link_libraries(test_connection_manager
     network_lib
     pthread
 )
+
+
+
+add_executable(test_idle_timeout
+    test_idle_timeout.cpp
+)
+
+target_link_libraries(test_idle_timeout
+    network_lib
+    pthread
+)

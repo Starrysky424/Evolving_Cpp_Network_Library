@@ -5,7 +5,8 @@
 
 int main()
 {
-    ConnectionManager manager;
+    EpollPoller poller;
+    ConnectionManager manager(&poller);
 
     // 1. 初始状态
     assert(manager.has_connection(100) == false);

@@ -10,6 +10,10 @@ Connection::Connection(int fd)
 {
 }
 
+Connection::~Connection()
+{
+    ::close(fd_);
+}
     IOEvent Connection::recv_data()
     {
         char buffer[4096]{};
@@ -30,6 +34,10 @@ Connection::Connection(int fd)
             else if (len == 0)
             {
                 std::cout << "close client" << std::endl;
+
+                if (close_callback_)
+                    close_callback_(fd_);
+
                 return IOEvent::CLOSE;
             }
 
@@ -37,12 +45,30 @@ Connection::Connection(int fd)
             {
                 break;
             }
+
             perror("recv");
+            if (close_callback_)
+                close_callback_(fd_);
             return IOEvent::ERROR;
         }
 
         if(received)
+        {
+            if (message_callback_)
+            {
+                std::string message;
+
+                while (decode_message(message))
+                {
+                    message_callback_(*this,
+                                      message);
+
+                    message.clear();
+                }
+            }
             return IOEvent::DATA;
+        }
+           
 
         return IOEvent::NONE;
     }
@@ -131,5 +157,15 @@ Connection::Connection(int fd)
     Connection::getLastActiveTime() const
     {
         return last_active_time_;
+    }
+
+    void Connection::setMessageCallback(MessageCallback callback)
+    {
+        message_callback_ = std::move(callback);
+    }
+
+    void Connection::setCloseCallback(CloseCallback callback)
+    {
+        close_callback_ = std::move(callback);
     }
     // 此类的核心思想是将一个客户端连接对应的fd，recv，send，以及连接该数据的Buffer封装到一起，一个Connection就表示一个客户端连接

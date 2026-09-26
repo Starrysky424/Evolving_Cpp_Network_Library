@@ -4,13 +4,19 @@
 #include "IOEvent.h"
 #include"Decoder.h"
 #include <chrono>
+#include<functional>
+
 
 class Connection
 {
 
     public:
+        using MessageCallback = std::function<void(Connection &, const std::string &)>;
+
+        using CloseCallback = std::function<void(int fd)>;
         Connection(int fd);
-        //接收客户端数据
+        ~Connection();
+        // 接收客户端数据
         IOEvent recv_data();
 
         //向客户端发送数据
@@ -37,12 +43,17 @@ class Connection
         //获取最近一次活动时间
         std::chrono::steady_clock::time_point getLastActiveTime() const;
 
+        void setMessageCallback(MessageCallback callback);
+
+        void setCloseCallback(CloseCallback callback);
+
     private:
         int fd_;
         Buffer input_buffer_;
         uint32_t events_{EPOLLIN};
         Buffer output_buffer_;
         Decoder decoder_;
-
+        CloseCallback close_callback_;
+        MessageCallback message_callback_;
         std::chrono::steady_clock::time_point last_active_time_;
 };
