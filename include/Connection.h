@@ -5,7 +5,7 @@
 #include"Decoder.h"
 #include <chrono>
 #include<functional>
-
+#include<string>
 
 class Connection
 {
@@ -47,6 +47,10 @@ class Connection
 
         void setCloseCallback(CloseCallback callback);
 
+        void setWriteCallbacks(
+            std::function<void()> enable,
+            std::function<void()> disable);
+
     private:
         int fd_;
         Buffer input_buffer_;
@@ -56,4 +60,7 @@ class Connection
         CloseCallback close_callback_;
         MessageCallback message_callback_;
         std::chrono::steady_clock::time_point last_active_time_;
+
+        std::function<void()> enable_write_callback_;
+        std::function<void()> disable_write_callback_;
 };

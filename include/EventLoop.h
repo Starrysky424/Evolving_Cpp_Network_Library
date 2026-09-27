@@ -7,11 +7,11 @@
 #include<string>
 #include"TimerQueue.h"
 
-    using ClientMessageCallback = std::function<void(Connection&,const std::string&)>;
+   
     class EventLoop
     {
     public:
-      
+        using ClientMessageCallback = std::function<void(Connection &, const std::string &)>;
         EventLoop(int server_fd);
 
         void run();

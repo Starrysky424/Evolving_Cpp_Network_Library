@@ -53,11 +53,32 @@ EventLoop::EventLoop(int server_fd)
             fcntl(client_fd, F_SETFL, flags | O_NONBLOCK);
 
             connectionManager_.add_connection(client_fd);
-            
-            Connection *client =
-                connectionManager_.get_connection(client_fd);
+
+            Connection *client = connectionManager_.get_connection(client_fd);
 
             client->setMessageCallback(message_callback_);
+
+            client->setCloseCallback(
+                [this](int fd)
+                {
+                    connectionManager_.delete_connection(fd);
+                });
+            client->setWriteCallbacks(
+                [this, client_fd, client]()
+                {
+                    if(client->enable_write())
+                    {
+                        epollPoller_.modify_fd(client_fd, client->events());
+
+                    }
+                },
+                [this, client_fd, client]()
+                {
+                    if(client->disable_write())
+                    {
+                        epollPoller_.modify_fd(client_fd, client->events());
+                    }
+                });
             std::cout << "new client:" << client_fd << std::endl;
         }
        
@@ -77,24 +98,12 @@ EventLoop::EventLoop(int server_fd)
 
         if (event==IOEvent::CLOSE || event==IOEvent::ERROR)
         {
-            // std::cout << "server close fd: " << fd
-            //           << ", event: " << static_cast<int>(event)
-            //           << std::endl;
-            connectionManager_.delete_connection(fd);
-           
+            return;
         }
 
-        else  if(event==IOEvent::DATA)
+        if(event==IOEvent::DATA)
         {
-            if(client->output_buffer().read_able_bytes()>0)
-            {
-               if(client->enable_write()){
-                   epollPoller_.modify_fd(fd, client->events());
-               }
-
-              
-            }
-           
+            client->send_data();
         }
     }
 
@@ -146,15 +155,6 @@ void EventLoop::run()
                     continue;
 
                 client->send_data();
-
-                if(client->output_buffer().read_able_bytes()==0)
-                {
-                    if(client->disable_write())
-                    {
-                        epollPoller_.modify_fd(event.fd, client->events());
-                    }
-                    
-                }
 
             }
         }
