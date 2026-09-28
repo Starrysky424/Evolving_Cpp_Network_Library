@@ -28,7 +28,8 @@
 
         void runInLoop(std::function<void()> cb);
 
-        
+        void stop();
+
     private:
         void accept_new_connection();
         void handle_client_event(int fd);
@@ -48,4 +49,6 @@
         std::thread::id loop_thread_id_;
         std::vector<std::function<void()>> tasks_;
         std::mutex mutex_;
+
+        bool running_;
     };

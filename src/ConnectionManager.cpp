@@ -18,7 +18,11 @@ ConnectionManager::ConnectionManager(EpollPoller *poller)
 
     void ConnectionManager::delete_connection(int fd)
     {
-        if(poller_)
+        auto it = connections_.find(fd);
+        if(it==connections_.end())
+            return;
+            
+        if (poller_)
             poller_->remove_fd(fd);
 
         connections_.erase(fd);

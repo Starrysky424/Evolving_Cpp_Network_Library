@@ -37,3 +37,12 @@ target_link_libraries(test_idle_timeout
     network_lib
     pthread
 )
+
+add_executable(test_event_loop
+    test_event_loop.cpp
+)
+
+target_link_libraries(test_event_loop
+    network_lib
+    pthread
+)

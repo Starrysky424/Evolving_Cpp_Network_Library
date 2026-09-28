@@ -14,8 +14,8 @@ EventLoop::EventLoop(int server_fd)
     : server_fd_(server_fd),
       wakeup_fd_(eventfd(0,EFD_NONBLOCK)),
       timer_queue_(this),
-      connectionManager_(&epollPoller_)
-    
+      connectionManager_(&epollPoller_),
+      running_(true)
 {
     if(wakeup_fd_==-1)
     {
@@ -118,7 +118,7 @@ void EventLoop::run()
 {
     loop_thread_id_ = std::this_thread::get_id();
 
-    while (true)
+    while (running_)
     {
         int n = epollPoller_.wait(5000);
 
@@ -296,4 +296,12 @@ void EventLoop::runInLoop(std::function<void()> cb)
     {
         queueInLoop(std::move(cb));
     }
+}
+
+void EventLoop::stop()
+{
+    running_ = false;
+
+    uint64_t value = 1;
+    write(wakeup_fd_, &value, sizeof(value));
 }
