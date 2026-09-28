@@ -6,8 +6,9 @@
 #include"Event.h"
 #include<string>
 #include"TimerQueue.h"
-
-   
+#include<mutex>
+#include<vector>
+#include<thread> 
     class EventLoop
     {
     public:
@@ -23,6 +24,11 @@
 
         void runEvery(std::chrono::milliseconds interval, TimerQueue::TimerCallback cb);
 
+        void queueInLoop(std::function<void()> cb);
+
+        void runInLoop(std::function<void()> cb);
+
+        
     private:
         void accept_new_connection();
         void handle_client_event(int fd);
@@ -33,9 +39,13 @@
 
     private:
         int server_fd_;
+        int wakeup_fd_;
         EpollPoller epollPoller_;
         ConnectionManager connectionManager_;
 
         ClientMessageCallback message_callback_;
         TimerQueue timer_queue_;
+        std::thread::id loop_thread_id_;
+        std::vector<std::function<void()>> tasks_;
+        std::mutex mutex_;
     };

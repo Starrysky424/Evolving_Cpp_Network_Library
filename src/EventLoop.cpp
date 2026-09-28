@@ -9,13 +9,20 @@
 #include"logger.h"
 #include<chrono>
 #include"Connection.h"
+#include<sys/eventfd.h>
 EventLoop::EventLoop(int server_fd)
     : server_fd_(server_fd),
+      wakeup_fd_(eventfd(0,EFD_NONBLOCK)),
       timer_queue_(this),
       connectionManager_(&epollPoller_)
+    
 {
+    if(wakeup_fd_==-1)
+    {
+        throw std::runtime_error("eventfd failed");
+    }
     epollPoller_.add_fd(server_fd_);
-
+    epollPoller_.add_fd(wakeup_fd_);
     epollPoller_.add_fd(timer_queue_.getTimerFd());
 
     startIdleTimeout();
@@ -109,7 +116,8 @@ EventLoop::EventLoop(int server_fd)
 
 void EventLoop::run()
 {
-    
+    loop_thread_id_ = std::this_thread::get_id();
+
     while (true)
     {
         int n = epollPoller_.wait(5000);
@@ -157,6 +165,23 @@ void EventLoop::run()
                 client->send_data();
 
             }
+
+            else if(event.type==EventType::WAKEUP)
+            {
+                uint64_t value;
+                read(wakeup_fd_, &value, sizeof(value));
+
+                std::vector<std::function<void()>> local_tasks;
+                {
+                    std::lock_guard<std::mutex> lock(mutex_);
+                    local_tasks.swap(tasks_);
+                }
+
+                for(auto &task:local_tasks)
+                {
+                    task();
+                }
+            }
         }
     }
 }
@@ -183,6 +208,10 @@ std::vector<Event> EventLoop:: get_events(int n)
             events.emplace_back(fd, EventType::TIMER);
         }
 
+        else if(fd==wakeup_fd_)
+        {
+            events.emplace_back(fd, EventType::WAKEUP);
+        }
         else
         {
             if(revents&EPOLLIN)
@@ -244,4 +273,27 @@ void EventLoop::startIdleTimeout()
 
             }
         });
+}
+
+void  EventLoop:: queueInLoop(std::function<void()> cb)
+{
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        tasks_.push_back(std::move(cb));
+    }
+
+    uint64_t cnt = 1;
+    write(wakeup_fd_, &cnt, sizeof(cnt));
+}
+
+void EventLoop::runInLoop(std::function<void()> cb)
+{
+    if (std::this_thread::get_id() == loop_thread_id_)
+    {
+        cb();
+    }
+    else
+    {
+        queueInLoop(std::move(cb));
+    }
 }

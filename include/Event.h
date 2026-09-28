@@ -10,6 +10,7 @@ enum class EventType
 
     TIMER, //定时器事件
 
+    WAKEUP, //通知任务
     CLOSE  //关闭
 };
 
