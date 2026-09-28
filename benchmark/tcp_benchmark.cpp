@@ -16,7 +16,7 @@
 #include <cerrno>
 
 #include "Buffer.h"
-#include "Decoder.h"
+#include "decoder/Decoder.h"
 
 //一个客户端线程的测试结果
 struct WorkerResult
@@ -89,9 +89,13 @@ static bool receive_message(
 {
     while (true)
     {
+        auto result = decoder.decode(input_buffer);
         // Buffer 中已经有完整消息
-        if (decoder.decode(input_buffer, message))
-            return true;
+        if (result)
+            {
+                message = std::move(*result);
+                return true;
+            }
 
         char buffer[4096];
 

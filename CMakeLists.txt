@@ -9,7 +9,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -g")
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
 #网络库源码，不包含main.cpp
-file(GLOB LIB_SOURCES
+file(GLOB_RECURSE LIB_SOURCES 
     ${PROJECT_SOURCE_DIR}/src/*.cpp
 )
 

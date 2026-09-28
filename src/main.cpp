@@ -4,6 +4,9 @@
 #include"ConnectionManager.h"
 #include"SocketListener.h"
 #include <netinet/in.h>
+
+#include "decoder/Decoder.h"
+#include <memory>
 int main()
 {
 
@@ -12,6 +15,7 @@ int main()
     SocketListener socketListener("127.0.0.1", 8080);
 
     EventLoop eventLoop(socketListener.fd());
+    eventLoop.setDecoder(std::make_unique<Decoder>());
     eventLoop.set_message_callback(
         [](Connection &connection, const std::string &message)
         {

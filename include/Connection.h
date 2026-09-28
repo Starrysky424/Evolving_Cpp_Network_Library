@@ -2,7 +2,7 @@
 #include<sys/epoll.h>
 #include"Buffer.h"
 #include "IOEvent.h"
-#include"Decoder.h"
+#include"decoder/FrameDecoder.h"
 #include <chrono>
 #include<functional>
 #include<string>
@@ -51,12 +51,14 @@ class Connection
             std::function<void()> enable,
             std::function<void()> disable);
 
+        void setDecoder(std::unique_ptr<FrameDecoder> decoder);
+
     private:
         int fd_;
         Buffer input_buffer_;
         uint32_t events_{EPOLLIN};
         Buffer output_buffer_;
-        Decoder decoder_;
+        std::unique_ptr<FrameDecoder> decoder_;
         CloseCallback close_callback_;
         MessageCallback message_callback_;
         std::chrono::steady_clock::time_point last_active_time_;

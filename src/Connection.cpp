@@ -132,7 +132,16 @@ Connection::~Connection()
 
     bool Connection::decode_message(std::string &message)
     {
-        return decoder_.decode(input_buffer_, message);
+        if (!decoder_)
+            return false;
+
+        auto result = decoder_->decode(input_buffer_);
+
+        if (!result)
+            return false;
+
+        message = std::move(*result);
+        return true;
     }
 
 
@@ -183,5 +192,10 @@ Connection::~Connection()
     {
         enable_write_callback_ = std::move(enable);
         disable_write_callback_ = std::move(disable);
+    }
+
+    void Connection::setDecoder(std::unique_ptr<FrameDecoder> decoder)
+    {
+        decoder_ = std::move(decoder);
     }
     // 此类的核心思想是将一个客户端连接对应的fd，recv，send，以及连接该数据的Buffer封装到一起，一个Connection就表示一个客户端连接

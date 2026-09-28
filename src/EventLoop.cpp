@@ -29,6 +29,14 @@ EventLoop::EventLoop(int server_fd)
     LOG_INFO("TCP server initialized");
 }
 
+EventLoop::~EventLoop()
+{
+    if(wakeup_fd_!=-1)
+    {
+        close(wakeup_fd_);
+    }
+}
+
     // 有新客户端连接
     void EventLoop::accept_new_connection()
     {
@@ -63,8 +71,17 @@ EventLoop::EventLoop(int server_fd)
 
             Connection *client = connectionManager_.get_connection(client_fd);
 
+            if (decoder_)
+            {
+                client->setDecoder(decoder_->clone());
+            }
             client->setMessageCallback(message_callback_);
 
+            if (decoder_)
+            {
+                client->setDecoder(decoder_->clone());
+            }
+            
             client->setCloseCallback(
                 [this](int fd)
                 {
@@ -304,4 +321,9 @@ void EventLoop::stop()
 
     uint64_t value = 1;
     write(wakeup_fd_, &value, sizeof(value));
+}
+
+void EventLoop::setDecoder(std::unique_ptr<FrameDecoder> decoder)
+{
+    decoder_ = std::move(decoder);
 }
