@@ -4,7 +4,7 @@
 class SocketListener
 {
     public:
-        SocketListener(const char *ip, int port);
+        SocketListener(const char *ip, int port, int backlog);
 
         int fd() const;
     

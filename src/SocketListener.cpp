@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include<iostream>
 #include<fcntl.h>
-SocketListener::SocketListener(const char *ip, int port)
+SocketListener::SocketListener(const char *ip, int port,int backlog)
 {
     fd_ = socket(AF_INET, SOCK_STREAM, 0);
     if(fd_==-1)
@@ -49,7 +49,7 @@ SocketListener::SocketListener(const char *ip, int port)
         return;
     }
 
-    if(listen(fd_,10)==-1)
+    if(listen(fd_,backlog)==-1)
     {
         perror("listen");
         close(fd_);

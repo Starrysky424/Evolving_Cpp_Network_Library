@@ -10,13 +10,17 @@
 #include<chrono>
 #include"Connection.h"
 #include<sys/eventfd.h>
-EventLoop::EventLoop(int server_fd)
+#include<csignal>
+EventLoop::EventLoop(int server_fd, int max_events, int epoll_timeout_ms, int recv_buffer_size)
     : server_fd_(server_fd),
-      wakeup_fd_(eventfd(0,EFD_NONBLOCK)),
+      wakeup_fd_(eventfd(0, EFD_NONBLOCK)),
       timer_queue_(this),
-      connectionManager_(&epollPoller_),
-      running_(true)
+      epollPoller_(max_events),
+      connectionManager_(&epollPoller_, recv_buffer_size),
+      running_(true),
+      epoll_timeout_ms_(epoll_timeout_ms)
 {
+    signal(SIGPIPE, SIG_IGN);
     if(wakeup_fd_==-1)
     {
         throw std::runtime_error("eventfd failed");
@@ -70,17 +74,12 @@ EventLoop::~EventLoop()
             connectionManager_.add_connection(client_fd);
 
             Connection *client = connectionManager_.get_connection(client_fd);
-
             if (decoder_)
             {
                 client->setDecoder(decoder_->clone());
             }
+
             client->setMessageCallback(message_callback_);
-
-            if (decoder_)
-            {
-                client->setDecoder(decoder_->clone());
-            }
             
             client->setCloseCallback(
                 [this](int fd)
@@ -137,7 +136,7 @@ void EventLoop::run()
 
     while (running_)
     {
-        int n = epollPoller_.wait(5000);
+        int n = epollPoller_.wait(epoll_timeout_ms_);
 
       
         if (n == -1)
@@ -186,7 +185,15 @@ void EventLoop::run()
             else if(event.type==EventType::WAKEUP)
             {
                 uint64_t value;
-                read(wakeup_fd_, &value, sizeof(value));
+                ssize_t n =read(wakeup_fd_, &value, sizeof(value));
+
+                if (n == -1)
+                {
+                    if (errno != EAGAIN && errno != EWOULDBLOCK)
+                    {
+                        perror("read eventfd");
+                    }
+                }
 
                 std::vector<std::function<void()>> local_tasks;
                 {
@@ -300,7 +307,15 @@ void  EventLoop:: queueInLoop(std::function<void()> cb)
     }
 
     uint64_t cnt = 1;
-    write(wakeup_fd_, &cnt, sizeof(cnt));
+    ssize_t n=write(wakeup_fd_, &cnt, sizeof(cnt));
+
+    if (n == -1)
+    {
+        if (errno != EAGAIN && errno != EWOULDBLOCK)
+        {
+            perror("write eventfd");
+        }
+    }
 }
 
 void EventLoop::runInLoop(std::function<void()> cb)
@@ -320,7 +335,15 @@ void EventLoop::stop()
     running_ = false;
 
     uint64_t value = 1;
-    write(wakeup_fd_, &value, sizeof(value));
+    ssize_t n = write(wakeup_fd_, &value, sizeof(value));
+
+    if (n == -1)
+    {
+        if (errno != EAGAIN && errno != EWOULDBLOCK)
+        {
+            perror("write eventfd");
+        }
+    }
 }
 
 void EventLoop::setDecoder(std::unique_ptr<FrameDecoder> decoder)

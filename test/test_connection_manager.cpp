@@ -7,8 +7,8 @@
 
 int main()
 {
-    EpollPoller poller;
-    ConnectionManager manager(&poller);
+    EpollPoller poller(4096);
+    ConnectionManager manager(&poller,4096);
 
     int sockets1[2];
     int sockets2[2];

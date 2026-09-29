@@ -2,11 +2,13 @@
 #include<sys/socket.h>
 #include<unistd.h>
 #include<iostream>
+#include<vector>
 #include <cerrno>
 // 构造函数
-Connection::Connection(int fd)
+Connection::Connection(int fd, int recv_buffer_size)
     : fd_(fd),
-     last_active_time_(std::chrono::steady_clock::now())
+      last_active_time_(std::chrono::steady_clock::now()),
+      recv_buffer_size_(recv_buffer_size)
 {
 }
 
@@ -17,16 +19,16 @@ Connection::~Connection()
 
     IOEvent Connection::recv_data()
     {
-        char buffer[4096]{};
+        std::vector<char> buffer(recv_buffer_size_);
         bool received = false;
         while (true)
         {
-            int len = recv(fd_, buffer, sizeof(buffer) - 1, 0);
+            ssize_t len = recv(fd_, buffer.data(), buffer.size(), 0);
 
             if (len > 0)
             {
                 // std::cout << "recv: " << len << std::endl;
-                input_buffer_.add_data(buffer, len);
+                input_buffer_.add_data(buffer.data(), len);
                 last_active_time_ = std::chrono::steady_clock::now();
                 received = true;
                 continue;

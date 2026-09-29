@@ -1,14 +1,15 @@
 #include"ConnectionManager.h"
 #include<unistd.h>
-ConnectionManager::ConnectionManager(EpollPoller *poller)
-    : poller_(poller)
+ConnectionManager::ConnectionManager(EpollPoller *poller,int recv_buffer_size)
+    : poller_(poller),
+      recv_buffer_size_(recv_buffer_size)
 {
 }
 
     void ConnectionManager::add_connection(int fd)
     {
 
-        auto result = connections_.try_emplace(fd, fd);
+        auto result = connections_.try_emplace(fd, fd,recv_buffer_size_);
 
         if(result.second&&poller_)
         {

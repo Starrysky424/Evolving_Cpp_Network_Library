@@ -14,7 +14,7 @@ int main()
 
     assert(socketpair(AF_UNIX, SOCK_STREAM, 0, sockets) == 0);
 
-    EventLoop loop(sockets[0]);
+    EventLoop loop(sockets[0],4096,100,4096);
 
     std::atomic<bool> loop_thread_task_executed{false};
     std::atomic<bool> other_thread_task_executed{false};

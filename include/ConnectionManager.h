@@ -7,7 +7,7 @@
 class ConnectionManager
 {
     public:
-        explicit ConnectionManager(EpollPoller *poller);
+        explicit ConnectionManager(EpollPoller *poller,int recv_buffer_size);
         // 添加连接
         void add_connection(int fd);
 
@@ -23,6 +23,6 @@ class ConnectionManager
 
     private:
         std::unordered_map<int, Connection> connections_;
-
+        int recv_buffer_size_;
         EpollPoller *poller_;
 };

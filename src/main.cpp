@@ -4,17 +4,22 @@
 #include"ConnectionManager.h"
 #include"SocketListener.h"
 #include <netinet/in.h>
-
+#include"Config.h"
 #include "decoder/Decoder.h"
 #include <memory>
-int main()
+int main(int argc,char **argv)
 {
 
     signal(SIGPIPE, SIG_IGN);
     //监听服务器
-    SocketListener socketListener("127.0.0.1", 8080);
 
-    EventLoop eventLoop(socketListener.fd());
+    Config config;
+    config.init(argc, argv);
+
+
+    SocketListener socketListener("127.0.0.1", config.port,config.backlog);
+
+    EventLoop eventLoop(socketListener.fd(),config.max_events, config.epoll_timeout_ms, config.recv_buffer_size);
     eventLoop.setDecoder(std::make_unique<Decoder>());
     eventLoop.set_message_callback(
         [](Connection &connection, const std::string &message)

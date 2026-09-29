@@ -2,14 +2,14 @@
 #include<unistd.h>
 #include<stdexcept>
 #include"logger.h"
-EpollPoller::EpollPoller()
+EpollPoller::EpollPoller(int max_events)
 {
     epoll_fd_ = epoll_create1(0);
     if(epoll_fd_==-1)
     {
         throw std::runtime_error("epoll_create1 failed");
     }
-    ready_events_.resize(1024);
+    ready_events_.resize(max_events);
 }
 
 void EpollPoller::add_fd(int fd)

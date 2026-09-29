@@ -6,7 +6,7 @@
 class EpollPoller
 {
     public:
-        EpollPoller();
+        EpollPoller(int max_events);
         ~EpollPoller();
 
         void add_fd(int fd);

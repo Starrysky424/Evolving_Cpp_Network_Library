@@ -14,7 +14,7 @@ class EventLoop
 {
 public:
     using ClientMessageCallback = std::function<void(Connection &, const std::string &)>;
-    EventLoop(int server_fd);
+    EventLoop(int server_fd, int max_events, int epoll_timeout_ms, int recv_buffer_size);
     ~EventLoop();
     void run();
 
@@ -53,4 +53,5 @@ private:
     std::mutex mutex_;
     std::unique_ptr<FrameDecoder> decoder_;
     bool running_;
+    int epoll_timeout_ms_;
 };

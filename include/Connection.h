@@ -14,7 +14,7 @@ class Connection
         using MessageCallback = std::function<void(Connection &, const std::string &)>;
 
         using CloseCallback = std::function<void(int fd)>;
-        Connection(int fd);
+        Connection(int fd, int recv_buffer_size);
         ~Connection();
         // 接收客户端数据
         IOEvent recv_data();
@@ -62,7 +62,7 @@ class Connection
         CloseCallback close_callback_;
         MessageCallback message_callback_;
         std::chrono::steady_clock::time_point last_active_time_;
-
+        int recv_buffer_size_;
         std::function<void()> enable_write_callback_;
         std::function<void()> disable_write_callback_;
 };
