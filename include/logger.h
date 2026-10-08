@@ -6,8 +6,7 @@
 #include <cstring>
 #include <ctime>
 
-enum LogLevel
-{
+enum LogLevel {
     LOG_LEVEL_NONE = 0,
     LOG_LEVEL_ERROR = 1,
     LOG_LEVEL_WARN = 2,
@@ -17,15 +16,14 @@ enum LogLevel
 
 #ifndef LOG_LEVEL
 #ifdef NDEBUG
-#define LOG_LEVEL 0 // NONE
+#define LOG_LEVEL 0  // NONE
 #else
-#define LOG_LEVEL 3 // INFO
+#define LOG_LEVEL 3  // INFO
 #endif
 #endif
 
 inline void log_impl(FILE *out, const char *level, const char *file, int line, const char *fmt,
-                     ...)
-{
+                     ...) {
     char timestamp[64] = {0};
     time_t t = time(nullptr);
     struct tm tm;
@@ -70,4 +68,4 @@ inline void log_impl(FILE *out, const char *level, const char *file, int line, c
 #define LOG_ERROR(...) ((void)0);
 #endif
 
-#endif // LOGGER_H
+#endif  // LOGGER_H

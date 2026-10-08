@@ -1,14 +1,14 @@
 #include "ConnectionManager.h"
 
-#include <cassert>
-#include <iostream>
 #include <sys/socket.h>
 #include <unistd.h>
 
-int main()
-{
+#include <cassert>
+#include <iostream>
+
+int main() {
     EpollPoller poller(4096);
-    ConnectionManager manager(&poller,4096);
+    ConnectionManager manager(&poller, 4096);
 
     int sockets1[2];
     int sockets2[2];
@@ -55,9 +55,8 @@ int main()
 
     std::cout << "ConnectionManager tests passed." << std::endl;
 
-    
     close(sockets1[1]);
-   
+
     close(sockets2[1]);
 
     return 0;

@@ -1,344 +1,454 @@
 #!/bin/bash
 
-# TCP Network Library Benchmark Script
-# 适配 Evolving_Cpp_Network_Library
+set -u
 
-set -e
+# ======================================
+# Report
+# ======================================
 
+RESULT_DIR="results"
+TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+REPORT_FILE="${RESULT_DIR}/benchmark_${TIMESTAMP}.txt"
 
-# ==================== 颜色 ====================
+mkdir -p "${RESULT_DIR}"
 
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m'
+# Terminal output + TXT report
+exec > >(tee -a "${REPORT_FILE}") 2>&1
 
+echo "Report file: ${REPORT_FILE}"
+echo "Start time : $(date)"
+echo
 
-# ==================== 路径 ====================
+# ======================================
+# Configuration
+# ======================================
 
-ROOT_DIR=$(cd "$(dirname "$0")/.." && pwd)
-
-SERVER="$ROOT_DIR/build/main"
-
-CLIENT="$ROOT_DIR/build/benchmark/tcp_benchmark"
-
-
+HOST="127.0.0.1"
 PORT=8080
+URL="http://${HOST}:${PORT}"
 
+THREADS=$(nproc)
 
-REPORT_FILE="benchmark_report_$(date +%Y%m%d_%H%M%S).txt"
+WARMUP_DURATION=60
+DURATION=30
+STABILITY_DURATION=300
 
+# ======================================
+# Connection staircase
+# ======================================
 
+CONNECTIONS=(
+    100
+    200
+    400
+    600
+    800
+    1000
+    1200
+    1400
+    1600
+    1800
+    2000
+    2200
+    2400
+    2600
+    2800
+    3000
+    4000
+    5000
+    7000
+    10000
+    15000
+    20000
+    30000
+    40000
+    50000
+    60000
+    70000
+    80000
+    90000
+    100000
+    110000
+    120000
+    130000
+    140000
+    150000
+)
 
-echo -e "${BLUE}========================================${NC}"
-echo -e "${GREEN}TCP Network Benchmark${NC}"
-echo -e "${BLUE}========================================${NC}"
+BEST_CONNECTIONS=0
+BEST_RPS=0
 
-echo "Server : $SERVER"
-echo "Client : $CLIENT"
-echo "Port   : $PORT"
-echo "Report : $REPORT_FILE"
+# ======================================
+# Header
+# ======================================
 
+echo "======================================"
+echo "   Evolving C++ Network Library"
+echo "   HTTP Benchmark"
+echo "======================================"
 
-# ==================== 启动服务器 ====================
+echo
+echo "Server : ${URL}"
+echo "Threads: ${THREADS}"
+echo "Warmup : ${WARMUP_DURATION}s"
+echo "Test   : ${DURATION}s"
+echo "Stable : ${STABILITY_DURATION}s"
+echo
 
+# ======================================
+# Check dependencies
+# ======================================
 
-echo -e "\n${YELLOW}[1/5] Starting TCPserver${NC}"
+echo "[1] Checking dependencies..."
 
+if ! command -v wrk >/dev/null 2>&1; then
+    echo "ERROR: wrk is not installed"
+    exit 1
+fi
 
-SERVER_LOG="$ROOT_DIR/server.log"
+if ! command -v curl >/dev/null 2>&1; then
+    echo "ERROR: curl is not installed"
+    exit 1
+fi
 
-$SERVER > $SERVER_LOG 2>&1 &
+echo "Dependencies OK."
 
+# ======================================
+# Check server
+# ======================================
 
-SERVER_PID=$!
+echo
+echo "[2] Checking server..."
 
+if ! curl -s --max-time 5 "${URL}" >/dev/null; then
+    echo "ERROR: server is not running"
+    exit 1
+fi
 
-echo "TCPserver PID: $SERVER_PID"
+echo "Server is available."
 
+# ======================================
+# Warmup
+# ======================================
 
-# ==================== 等待端口 ====================
+echo
+echo "======================================"
+echo "   Warmup"
+echo "======================================"
 
+echo
+echo "Duration    : ${WARMUP_DURATION}s"
+echo "Connections : 100"
 
-echo -e "\n${YELLOW}Waiting TCP server...${NC}"
+wrk \
+    --latency \
+    -t"${THREADS}" \
+    -c100 \
+    -d"${WARMUP_DURATION}s" \
+    "${URL}"
 
+# ======================================
+# Baseline Benchmark
+# ======================================
 
-for i in {1..10}
+echo
+echo "======================================"
+echo "   Baseline Benchmark"
+echo "======================================"
+
+echo
+echo "Duration    : ${DURATION}s"
+echo "Connections : 100"
+
+wrk \
+    --latency \
+    -t"${THREADS}" \
+    -c100 \
+    -d"${DURATION}s" \
+    "${URL}"
+
+# ======================================
+# Connection Staircase
+# ======================================
+
+echo
+echo "======================================"
+echo "   Connection Staircase"
+echo "======================================"
+
+for CONN in "${CONNECTIONS[@]}"
 do
 
-    if ss -lnt | grep -q ":$PORT"
+    echo
+    echo "--------------------------------------"
+    echo "Connections: ${CONN}"
+    echo "--------------------------------------"
+
+    RESULT_FILE=$(mktemp)
+
+    if wrk \
+        --latency \
+        -t"${THREADS}" \
+        -c"${CONN}" \
+        -d"${DURATION}s" \
+        "${URL}" >"${RESULT_FILE}" 2>&1
     then
-        echo -e "${GREEN}✓ TCPserver ready${NC}"
+
+        # ----------------------------------
+        # Print raw wrk result
+        # ----------------------------------
+
+        cat "${RESULT_FILE}"
+
+        # ----------------------------------
+        # Requests/sec
+        # ----------------------------------
+
+        RPS=$(awk '
+            /Requests\/sec:/ {
+                print $2
+                exit
+            }
+        ' "${RESULT_FILE}")
+
+        # ----------------------------------
+        # Average latency
+        # ----------------------------------
+
+        AVG_LATENCY=$(awk '
+            $1 == "Latency" && $2 != "Distribution" {
+                print $2
+                exit
+            }
+        ' "${RESULT_FILE}")
+
+        # ----------------------------------
+        # P99 latency
+        # ----------------------------------
+
+        P99=$(awk '
+            $1 == "99%" {
+                print $2
+                exit
+            }
+        ' "${RESULT_FILE}")
+
+        # ----------------------------------
+        # Socket errors
+        # ----------------------------------
+
+        SOCKET_ERRORS=$(awk '
+            /Socket errors:/ {
+                print
+                exit
+            }
+        ' "${RESULT_FILE}")
+
+        # ----------------------------------
+        # Summary
+        # ----------------------------------
+
+        echo
+        echo "Summary:"
+        echo "  Connections : ${CONN}"
+        echo "  Requests/sec: ${RPS:-N/A}"
+        echo "  Avg Latency : ${AVG_LATENCY:-N/A}"
+        echo "  P99 Latency : ${P99:-N/A}"
+
+        # ----------------------------------
+        # Socket error handling
+        # ----------------------------------
+
+        if [[ -n "${SOCKET_ERRORS}" ]]; then
+
+            echo "  ${SOCKET_ERRORS}"
+
+            CONNECT_ERRORS=$(echo "${SOCKET_ERRORS}" | awk '
+    {
+        for (i = 1; i <= NF; ++i) {
+            if ($i == "connect") {
+                value = $(i + 1)
+                gsub(/[^0-9]/, "", value)
+                print value
+                exit
+            }
+        }
+    }
+')
+
+            if [[ -n "${CONNECT_ERRORS}" &&
+                  "${CONNECT_ERRORS}" -gt 0 ]]; then
+
+                echo
+                echo "======================================"
+                echo "   Connection Limit Reached"
+                echo "======================================"
+
+                echo "Connect errors: ${CONNECT_ERRORS}"
+                echo "Stopping connection staircase."
+
+                rm -f "${RESULT_FILE}"
+
+                break
+            fi
+        fi
+
+        # ----------------------------------
+        # Record best throughput
+        # ----------------------------------
+
+        if [[ -n "${RPS}" ]]; then
+
+            RPS_VALUE=$(printf "%.0f" "${RPS}")
+
+            if (( RPS_VALUE > BEST_RPS )); then
+
+                BEST_RPS=${RPS_VALUE}
+                BEST_CONNECTIONS=${CONN}
+
+            fi
+        fi
+
+        # ----------------------------------
+        # Remove temporary result
+        # ----------------------------------
+
+        rm -f "${RESULT_FILE}"
+
+    else
+
+        echo
+        echo "======================================"
+        echo "   Connection Limit Reached"
+        echo "======================================"
+
+        cat "${RESULT_FILE}"
+
+        echo
+        echo "Failed at ${CONN} connections."
+        echo "Stopping connection staircase."
+
+        rm -f "${RESULT_FILE}"
+
         break
+
     fi
-
-
-    sleep 1
-
 
 done
 
+# ======================================
+# Benchmark Summary
+# ======================================
 
+echo
+echo "======================================"
+echo "   Benchmark Summary"
+echo "======================================"
 
-if ! ss -lnt | grep -q ":$PORT"
-then
+if (( BEST_CONNECTIONS > 0 )); then
 
-    echo -e "${RED}TCPserver start failed${NC}"
+    echo
+    echo "Best throughput:"
+    echo "  Connections : ${BEST_CONNECTIONS}"
+    echo "  Requests/sec: ${BEST_RPS}"
 
-    cat server.log
+else
+
+    echo
+    echo "No valid benchmark result."
+
+    echo
+    echo "End time: $(date)"
 
     exit 1
 
 fi
 
-
-
-# ==================== 初始化报告 ====================
-
-
-cat > $REPORT_FILE << EOF
-
-===================================================
-        TCP Benchmark Report
-===================================================
-
-Time:
-$(date)
-
-Server:
-$SERVER
-
-Port:
-$PORT
-
-
-Connection    QPS        P50        P99        Errors
-
-EOF
-
-
-
-# ==================== 预热 ====================
-
-
-echo -e "\n${YELLOW}[2/5] Warm up${NC}"
-
-
-$CLIENT 100 1000 64 > /dev/null
-
-
-echo -e "${GREEN}✓ Warm up finished${NC}"
-
-
-
-# ==================== 压力测试 ====================
-
-
-echo -e "\n${YELLOW}[3/5] Load test${NC}"
-
-
-
-CONNECTIONS=(
-
-100
-200
-400
-600
-800
-1000
-2000
-5000
-10000
-
-
-)
-
-
-
-RESULTS=()
-
-
-
-for CONN in "${CONNECTIONS[@]}"
-do
-
-
-echo -e "\n${BLUE}---- Testing $CONN connections ----${NC}"
-
-
-
-OUTPUT=$(
-$CLIENT \
-$CONN \
-5000 \
-64 2>&1
-)
-
-
-
-echo "$OUTPUT"
-
-
-
-QPS=$(echo "$OUTPUT" \
-| grep "QPS" \
-| awk '{print $3}')
-
-
-
-P50=$(echo "$OUTPUT" \
-| grep "P50" \
-| awk '{print $3}')
-
-
-
-P99=$(echo "$OUTPUT" \
-| grep "P99" \
-| awk '{print $3}')
-
-
-
-ERRORS=$(echo "$OUTPUT" \
-| grep "Errors" \
-| awk '{print $3}')
-
-
-
-ERRORS=${ERRORS:-0}
-
-
-
-printf "%-12s %-12s %-12s %-12s %-8s\n" \
-"$CONN" \
-"$QPS" \
-"$P50" \
-"$P99" \
-"$ERRORS"
-
-
-
-printf "%-12s %-12s %-12s %-12s %-8s\n" \
-"$CONN" \
-"$QPS" \
-"${P50}ms" \
-"${P99}ms" \
-"$ERRORS" \
->> $REPORT_FILE
-
-
-
-RESULTS+=("$CONN:$QPS")
-
-
-
-sleep 2
-
-
-done
-
-
-
-
-# ==================== 找最高QPS ====================
-
-
-echo -e "\n${YELLOW}[4/5] Analyze${NC}"
-
-
-
-BEST_CONN=0
-
-BEST_QPS=0
-
-
-
-for R in "${RESULTS[@]}"
-do
-
-IFS=':' read CONN QPS <<< "$R"
-
-
-if (( $(echo "$QPS > $BEST_QPS" | bc -l) ))
+# ======================================
+# Stability Test
+# ======================================
+
+echo
+echo "======================================"
+echo "   Stability Test"
+echo "======================================"
+
+echo
+echo "Connections : ${BEST_CONNECTIONS}"
+echo "Duration    : ${STABILITY_DURATION}s"
+
+STABILITY_RESULT=$(mktemp)
+
+if wrk \
+    --latency \
+    -t"${THREADS}" \
+    -c"${BEST_CONNECTIONS}" \
+    -d"${STABILITY_DURATION}s" \
+    "${URL}" >"${STABILITY_RESULT}" 2>&1
 then
 
-BEST_QPS=$QPS
+    cat "${STABILITY_RESULT}"
 
-BEST_CONN=$CONN
+    STABILITY_RPS=$(awk '
+        /Requests\/sec:/ {
+            print $2
+            exit
+        }
+    ' "${STABILITY_RESULT}")
+
+    STABILITY_AVG=$(awk '
+        $1 == "Latency" && $2 != "Distribution" {
+            print $2
+            exit
+        }
+    ' "${STABILITY_RESULT}")
+
+    STABILITY_P99=$(awk '
+        $1 == "99%" {
+            print $2
+            exit
+        }
+    ' "${STABILITY_RESULT}")
+
+    STABILITY_ERRORS=$(awk '
+        /Socket errors:/ {
+            print
+            exit
+        }
+    ' "${STABILITY_RESULT}")
+
+    echo
+    echo "Stability Summary:"
+    echo "  Connections : ${BEST_CONNECTIONS}"
+    echo "  Requests/sec: ${STABILITY_RPS:-N/A}"
+    echo "  Avg Latency : ${STABILITY_AVG:-N/A}"
+    echo "  P99 Latency : ${STABILITY_P99:-N/A}"
+
+    if [[ -n "${STABILITY_ERRORS}" ]]; then
+        echo "  ${STABILITY_ERRORS}"
+    fi
+
+else
+
+    echo
+    echo "Stability test failed."
+
+    cat "${STABILITY_RESULT}"
 
 fi
 
+rm -f "${STABILITY_RESULT}"
 
-done
+# ======================================
+# Finished
+# ======================================
 
+echo
+echo "======================================"
+echo "   Benchmark finished."
+echo "======================================"
 
-
-echo "
-Best connection:
-$BEST_CONN
-
-Best QPS:
-$BEST_QPS
-" >> $REPORT_FILE
-
-
-
-
-echo -e "${GREEN}"
-echo "Best:"
-echo "$BEST_CONN connections"
-echo "$BEST_QPS QPS"
-echo -e "${NC}"
-
-
-
-# ==================== 稳定性测试 ====================
-
-
-echo -e "\n${YELLOW}[5/5] Stability test${NC}"
-
-
-
-STABILITY=$(
-$CLIENT \
-$BEST_CONN \
-300000 \
-64 2>&1
-)
-
-
-
-echo "$STABILITY" >> $REPORT_FILE
-
-
-
-STABLE_QPS=$(echo "$STABILITY" \
-| grep "QPS" \
-| awk '{print $3}')
-
-
-
-echo "
-Stability QPS:
-$STABLE_QPS
-" >> $REPORT_FILE
-
-
-
-# ==================== 清理 ====================
-
-
-echo -e "\n${YELLOW}Stopping TCPserver${NC}"
-
-
-kill $SERVER_PID
-
-
-
-echo -e "\n${GREEN}✓ Benchmark finished${NC}"
-
-echo "Report:"
-echo "$REPORT_FILE"
-
-
-tail -20 $REPORT_FILE
+echo
+echo "End time   : $(date)"
+echo "Report file: ${REPORT_FILE}"
+echo

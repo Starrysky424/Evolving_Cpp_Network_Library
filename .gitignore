@@ -1,0 +1,29 @@
+# Build
+build/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+Makefile
+cmake_install.cmake
+compile_commands.json
+
+# Compiled files
+*.o
+*.a
+*.so
+*.out
+
+# Benchmark results
+results/
+*.log
+
+# Runtime
+*.pid
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

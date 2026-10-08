@@ -1,29 +1,30 @@
 #pragma once
 
-#include"EpollPoller.h"
-#include<functional>
-#include"ConnectionManager.h"
-#include"Event.h"
-#include<string>
-#include"TimerQueue.h"
-#include<mutex>
-#include<vector>
-#include<thread>
-#include "decoder/FrameDecoder.h"
-#include"Config.h"
+#include "Config.h"
+#include "ConnectionManager.h"
+#include "EpollPoller.h"
+#include "Event.h"
 #include "SocketListener.h"
-#include<atomic>
-class EventLoop
-{
+#include "TimerQueue.h"
+#include "decoder/FrameDecoder.h"
+
+#include <atomic>
+#include <functional>
+#include <mutex>
+#include <string>
+#include <thread>
+#include <vector>
+class EventLoop {
 public:
     using ClientMessageCallback = std::function<void(Connection &, const std::string &)>;
-    EventLoop(Config& config);
+    EventLoop(Config &config);
     ~EventLoop();
     void run();
 
     void set_message_callback(ClientMessageCallback callback);
 
-    TimerQueue::TimerId runAt(std::chrono::steady_clock::time_point when, TimerQueue::TimerCallback cb);
+    TimerQueue::TimerId runAt(std::chrono::steady_clock::time_point when,
+                              TimerQueue::TimerCallback cb);
 
     TimerQueue::TimerId runAfter(std::chrono::milliseconds delay, TimerQueue::TimerCallback cb);
 

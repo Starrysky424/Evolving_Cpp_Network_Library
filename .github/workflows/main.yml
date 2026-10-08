@@ -1,0 +1,63 @@
+name: Main Branch CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            cmake \
+            build-essential \
+            clang-format
+
+      - name: Configure CMake
+        run: |
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: |
+          cmake --build build --parallel $(nproc)
+
+      - name: Check code formatting
+        run: |
+          find include src test \
+            \( -name '*.h' -o -name '*.cpp' \) \
+            -exec clang-format --dry-run --Werror {} +
+
+      - name: Run unit tests
+        run: |
+          ./build/test/test_buffer
+          ./build/test/test_decoder
+          ./build/test/test_connection_manager
+          ./build/test/test_idle_timeout
+          ./build/test/test_event_loop
+
+  docker-build:
+    needs: build-and-test
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          tags: evolving-cpp-network-library:ci

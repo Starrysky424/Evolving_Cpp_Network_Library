@@ -1,29 +1,22 @@
 #pragma once
 
-enum class EventType
-{
-    NEW_CONNECTION, //建立新连接
+enum class EventType {
+    NEW_CONNECTION,  //建立新连接
 
-    READ, //读事件
+    READ,  //读事件
 
-    WRITE, //写事件
+    WRITE,  //写事件
 
-    TIMER, //定时器事件
+    TIMER,  //定时器事件
 
-    WAKEUP, //通知任务
-    CLOSE  //关闭
+    WAKEUP,  //通知任务
+    CLOSE    //关闭
 };
 
-struct Event
-{
+struct Event {
     int fd;
 
     EventType type;
 
-    Event(int fd, EventType type)
-        : fd(fd),
-          type(type)
-          {
-
-          }
+    Event(int fd, EventType type) : fd(fd), type(type) {}
 };

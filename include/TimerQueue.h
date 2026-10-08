@@ -3,17 +3,15 @@
 #include <chrono>
 #include <functional>
 #include <queue>
+#include <unordered_set>
 #include <vector>
-#include<unordered_set>
 class EventLoop;
 
-class TimerQueue
-{
+class TimerQueue {
 public:
     using TimerCallback = std::function<void()>;
 
-    struct TimerId
-    {
+    struct TimerId {
         int64_t sequence;
     };
 
@@ -21,14 +19,11 @@ public:
 
     ~TimerQueue();
 
-
     //添加定时器
-    TimerId addTimer(
-        TimerCallback cb,
-        std::chrono::steady_clock::time_point when,
-        std::chrono::milliseconds interval);
+    TimerId addTimer(TimerCallback cb, std::chrono::steady_clock::time_point when,
+                     std::chrono::milliseconds interval);
 
-        //取消定时器
+    //取消定时器
     void cancel(TimerId timerId);
 
     // 给epoll监听
@@ -38,9 +33,7 @@ public:
     void handleRead();
 
 private:
-
-    struct Timer
-    {
+    struct Timer {
         TimerId id;
 
         std::chrono::steady_clock::time_point when;
@@ -51,23 +44,15 @@ private:
 
         bool cancelled = false;
 
-        bool operator>(const Timer &rhs) const
-        {
-            return when > rhs.when;
-        }
+        bool operator>(const Timer &rhs) const { return when > rhs.when; }
     };
 
-    using TimerHeap =
-        std::priority_queue<
-            Timer,
-            std::vector<Timer>,
-            std::greater<Timer>>;
+    using TimerHeap = std::priority_queue<Timer, std::vector<Timer>, std::greater<Timer>>;
 
     int createTimerfd();
 
     //修改时间
-    void resetTimerfd(
-        std::chrono::steady_clock::time_point when);
+    void resetTimerfd(std::chrono::steady_clock::time_point when);
 
 private:
     EventLoop *loop_;

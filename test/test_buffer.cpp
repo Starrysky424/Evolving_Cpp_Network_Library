@@ -4,8 +4,7 @@
 #include <cstring>
 #include <iostream>
 
-int main()
-{
+int main() {
     Buffer buffer;
 
     // 1. 初始状态

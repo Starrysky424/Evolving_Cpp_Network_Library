@@ -1,25 +1,25 @@
 #pragma once
 
-#include<sys/epoll.h>
-#include<vector>
-#include<unordered_map>
-class EpollPoller
-{
-    public:
-        EpollPoller(int max_events);
-        ~EpollPoller();
+#include <sys/epoll.h>
 
-        void add_fd(int fd);
-        void modify_fd(int fd, uint32_t events);
-        void remove_fd(int fd);
+#include <unordered_map>
+#include <vector>
+class EpollPoller {
+public:
+    EpollPoller(int max_events);
+    ~EpollPoller();
 
-        int wait(int timeout);
+    void add_fd(int fd);
+    void modify_fd(int fd, uint32_t events);
+    void remove_fd(int fd);
 
-        const std::vector<epoll_event> &get_ready_events() const;
+    int wait(int timeout);
 
-    private:
-        int epoll_fd_;
-        std::vector<epoll_event> ready_events_;
-       
-        std::unordered_map<int, uint32_t> fd_events_;
+    const std::vector<epoll_event> &get_ready_events() const;
+
+private:
+    int epoll_fd_;
+    std::vector<epoll_event> ready_events_;
+
+    std::unordered_map<int, uint32_t> fd_events_;
 };

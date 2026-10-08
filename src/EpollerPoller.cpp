@@ -1,41 +1,33 @@
-#include"EpollPoller.h"
-#include<unistd.h>
-#include<stdexcept>
-#include"logger.h"
-EpollPoller::EpollPoller(int max_events)
-{
+#include "EpollPoller.h"
+#include "logger.h"
+
+#include <unistd.h>
+
+#include <stdexcept>
+EpollPoller::EpollPoller(int max_events) {
     epoll_fd_ = epoll_create1(0);
-    if(epoll_fd_==-1)
-    {
+    if (epoll_fd_ == -1) {
         throw std::runtime_error("epoll_create1 failed");
     }
     ready_events_.resize(max_events);
 }
 
-void EpollPoller::add_fd(int fd)
-{
+void EpollPoller::add_fd(int fd) {
     epoll_event event{};
 
     event.events = EPOLLIN;
     event.data.fd = fd;
-    if(epoll_ctl(epoll_fd_,EPOLL_CTL_ADD,fd,&event)==-1)
-    {
-        LOG_ERROR(
-            "epoll_ctl ADD failed, fd=%d, errno=%d, error=%s",
-            fd,
-            errno,
-            strerror(errno));
+    if (epoll_ctl(epoll_fd_, EPOLL_CTL_ADD, fd, &event) == -1) {
+        LOG_ERROR("epoll_ctl ADD failed, fd=%d, errno=%d, error=%s", fd, errno, strerror(errno));
         throw std::runtime_error("epoll_ctl add failed");
     }
     fd_events_[fd] = EPOLLIN;
 }
 
-void EpollPoller::modify_fd(int fd, uint32_t events)
-{
-
+void EpollPoller::modify_fd(int fd, uint32_t events) {
     auto it = fd_events_.find(fd);
 
-    if(it!=fd_events_.end()&&it->second==events)
+    if (it != fd_events_.end() && it->second == events)
         return;
 
     epoll_event event{};
@@ -43,25 +35,20 @@ void EpollPoller::modify_fd(int fd, uint32_t events)
     event.events = events;
 
     event.data.fd = fd;
-    if(epoll_ctl(epoll_fd_,EPOLL_CTL_MOD,fd,&event)==-1)
-    {
+    if (epoll_ctl(epoll_fd_, EPOLL_CTL_MOD, fd, &event) == -1) {
         throw std::runtime_error("epoll_ctl modfiy failed");
     }
     fd_events_[fd] = events;
 }
 
-void EpollPoller:: remove_fd(int fd)
-{
-
+void EpollPoller::remove_fd(int fd) {
     auto it = fd_events_.find(fd);
 
-    if(it==fd_events_.end())
+    if (it == fd_events_.end())
         return;
 
-    if (epoll_ctl(epoll_fd_, EPOLL_CTL_DEL, fd, nullptr) == -1)
-    {
-        if (errno != ENOENT && errno != EBADF)
-        {
+    if (epoll_ctl(epoll_fd_, EPOLL_CTL_DEL, fd, nullptr) == -1) {
+        if (errno != ENOENT && errno != EBADF) {
             throw std::runtime_error("epoll_ctl delete failed");
         }
     }
@@ -69,16 +56,12 @@ void EpollPoller:: remove_fd(int fd)
     fd_events_.erase(fd);
 }
 
-int EpollPoller:: wait(int timeout)
-{
-
+int EpollPoller::wait(int timeout) {
     int n;
-    while(true)
-    {
+    while (true) {
         n = epoll_wait(epoll_fd_, ready_events_.data(), ready_events_.size(), timeout);
-        if (n < 0)
-        {
-            if(errno==EINTR)
+        if (n < 0) {
+            if (errno == EINTR)
                 continue;
             throw std::runtime_error("epoll_wait failed");
         }
@@ -88,12 +71,10 @@ int EpollPoller:: wait(int timeout)
     return n;
 }
 
-const std::vector<epoll_event> &EpollPoller:: get_ready_events() const
-{
+const std::vector<epoll_event> &EpollPoller::get_ready_events() const {
     return ready_events_;
 }
 
- EpollPoller:: ~EpollPoller()
-{
+EpollPoller::~EpollPoller() {
     close(epoll_fd_);
 }

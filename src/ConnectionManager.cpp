@@ -1,52 +1,41 @@
-#include"ConnectionManager.h"
-#include<unistd.h>
-ConnectionManager::ConnectionManager(EpollPoller *poller,int recv_buffer_size)
-    : poller_(poller),
-      recv_buffer_size_(recv_buffer_size)
-{
+#include "ConnectionManager.h"
+
+#include <unistd.h>
+ConnectionManager::ConnectionManager(EpollPoller *poller, int recv_buffer_size)
+    : poller_(poller), recv_buffer_size_(recv_buffer_size) {}
+
+void ConnectionManager::add_connection(int fd) {
+    auto result = connections_.try_emplace(fd, fd, recv_buffer_size_);
+
+    if (result.second && poller_) {
+        poller_->add_fd(fd);
+    }
 }
 
-    void ConnectionManager::add_connection(int fd)
-    {
+void ConnectionManager::delete_connection(int fd) {
+    auto it = connections_.find(fd);
+    if (it == connections_.end())
+        return;
 
-        auto result = connections_.try_emplace(fd, fd,recv_buffer_size_);
+    if (poller_)
+        poller_->remove_fd(fd);
 
-        if(result.second&&poller_)
-        {
-            poller_->add_fd(fd);
-        }
+    connections_.erase(fd);
+}
+
+Connection *ConnectionManager::get_connection(int fd) {
+    auto it = connections_.find(fd);
+    if (it == connections_.end())
+        return nullptr;
+    return &it->second;
+}
+
+bool ConnectionManager::has_connection(int fd) const {
+    return connections_.find(fd) != connections_.end();
+}
+
+void ConnectionManager::forEachConn(const std::function<void(Connection *)> &callback) {
+    for (auto &pair : connections_) {
+        callback(&pair.second);
     }
-
-    void ConnectionManager::delete_connection(int fd)
-    {
-        auto it = connections_.find(fd);
-        if(it==connections_.end())
-            return;
-            
-        if (poller_)
-            poller_->remove_fd(fd);
-
-        connections_.erase(fd);
-
-    }
-
-    Connection *ConnectionManager::get_connection(int fd)
-    {
-        auto it = connections_.find(fd);
-        if(it==connections_.end())
-            return nullptr;
-        return &it->second;
-    }
-
-    bool ConnectionManager::has_connection(int fd)const
-    {
-        return connections_.find(fd) != connections_.end();
-    }
-
-    void ConnectionManager:: forEachConn(const std::function<void(Connection *)> &callback)
-    {
-        for(auto &pair : connections_)
-        {
-            callback(&pair.second);
-        }
-    }
+}

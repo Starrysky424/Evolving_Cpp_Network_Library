@@ -2,14 +2,14 @@
 #include "decoder/Decoder.h"
 
 #include <arpa/inet.h>
+
 #include <cassert>
 #include <cstring>
 #include <iostream>
 #include <string>
 #include <vector>
 
-std::vector<char> make_packet(const std::string &message)
-{
+std::vector<char> make_packet(const std::string &message) {
     uint32_t length = htonl(static_cast<uint32_t>(message.size()));
 
     std::vector<char> packet(4 + message.size());
@@ -20,8 +20,7 @@ std::vector<char> make_packet(const std::string &message)
     return packet;
 }
 
-int main()
-{
+int main() {
     Decoder decoder;
 
     // =========================

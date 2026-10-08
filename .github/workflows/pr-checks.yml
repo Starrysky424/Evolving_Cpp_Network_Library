@@ -1,0 +1,65 @@
+name: PR Checks
+
+on:
+  push:
+    branches-ignore:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            cmake \
+            build-essential \
+            clang-format \
+            lcov
+
+      - name: Check clang-format version
+        run: clang-format --version
+
+      - name: Configure CMake
+        run: |
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DCMAKE_CXX_FLAGS="--coverage" \
+            -DCMAKE_EXE_LINKER_FLAGS="--coverage"
+
+      - name: Build
+        run: |
+          cmake --build build --parallel $(nproc)
+
+      - name: Check code formatting
+        run: |
+          find include src test \
+            \( -name '*.h' -o -name '*.cpp' \) \
+            -exec clang-format --dry-run --Werror {} +
+
+      - name: Run unit tests
+        run: |
+          ./build/test/test_buffer
+          ./build/test/test_decoder
+          ./build/test/test_connection_manager
+          ./build/test/test_idle_timeout
+          ./build/test/test_event_loop
+
+      - name: Generate coverage report
+        run: |
+          lcov --capture \
+            --directory build \
+            --output-file build/coverage.info \
+            --ignore-errors mismatch
+
+          genhtml build/coverage.info \
+            --output-directory build/coverage_report

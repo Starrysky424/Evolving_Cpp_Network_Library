@@ -1,12 +1,12 @@
-#include"decoder/Decoder.h"
+#include "decoder/Decoder.h"
 
-#include<cstdint>
-#include<cstring>
-#include<arpa/inet.h>
+#include <arpa/inet.h>
 
-std::optional<std::string> Decoder::decode(Buffer &buffer)
-{
-    if(buffer.read_able_bytes()<4)
+#include <cstdint>
+#include <cstring>
+
+std::optional<std::string> Decoder::decode(Buffer &buffer) {
+    if (buffer.read_able_bytes() < 4)
         return std::nullopt;
 
     uint32_t length = 0;
@@ -15,7 +15,7 @@ std::optional<std::string> Decoder::decode(Buffer &buffer)
 
     length = ntohl(length);
 
-    if(buffer.read_able_bytes()<4+length)
+    if (buffer.read_able_bytes() < 4 + length)
         return std::nullopt;
 
     std::string message(buffer.get() + 4, length);
@@ -24,8 +24,6 @@ std::optional<std::string> Decoder::decode(Buffer &buffer)
     return message;
 }
 
-std::unique_ptr<FrameDecoder> Decoder::clone()const
-{
+std::unique_ptr<FrameDecoder> Decoder::clone() const {
     return std::make_unique<Decoder>();
 }
-

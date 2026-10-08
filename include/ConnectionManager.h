@@ -1,28 +1,28 @@
 #pragma once
 
 #include "Connection.h"
-#include<unordered_map>
-#include<functional>
-#include"EpollPoller.h"
-class ConnectionManager
-{
-    public:
-        explicit ConnectionManager(EpollPoller *poller,int recv_buffer_size);
-        // 添加连接
-        void add_connection(int fd);
+#include "EpollPoller.h"
 
-        //删除连接
-        void delete_connection(int fd);
+#include <functional>
+#include <unordered_map>
+class ConnectionManager {
+public:
+    explicit ConnectionManager(EpollPoller *poller, int recv_buffer_size);
+    // 添加连接
+    void add_connection(int fd);
 
-        //根据fd获取Connection
-        Connection *get_connection(int fd);
+    //删除连接
+    void delete_connection(int fd);
 
-        bool has_connection(int fd) const;
+    //根据fd获取Connection
+    Connection *get_connection(int fd);
 
-        void forEachConn(const std::function<void(Connection *)> &callback);
+    bool has_connection(int fd) const;
 
-    private:
-        std::unordered_map<int, Connection> connections_;
-        int recv_buffer_size_;
-        EpollPoller *poller_;
+    void forEachConn(const std::function<void(Connection *)> &callback);
+
+private:
+    std::unordered_map<int, Connection> connections_;
+    int recv_buffer_size_;
+    EpollPoller *poller_;
 };

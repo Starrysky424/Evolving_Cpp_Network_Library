@@ -1,0 +1,17 @@
+services:
+  network-library:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: evolving-cpp-network-library
+
+    ports:
+      - "8080:8080"
+
+    ulimits:
+      nofile:
+        soft: 1048576
+        hard: 1048576
+
+    restart: "no"

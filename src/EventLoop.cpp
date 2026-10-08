@@ -1,16 +1,19 @@
-#include"EventLoop.h"
-#include<iostream>
+#include "EventLoop.h"
+
+#include "Connection.h"
+#include "logger.h"
+
+#include <arpa/inet.h>
+#include <fcntl.h>
+#include <netinet/in.h>
+#include <sys/eventfd.h>
+#include <sys/select.h>
 #include <sys/socket.h>
 #include <unistd.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <sys/select.h>
-#include<fcntl.h>
-#include"logger.h"
-#include<chrono>
-#include"Connection.h"
-#include<sys/eventfd.h>
-#include<csignal>
+
+#include <chrono>
+#include <csignal>
+#include <iostream>
 EventLoop::EventLoop(Config &config)
     : socketListener_(config),
       wakeup_fd_(eventfd(0, EFD_NONBLOCK)),
@@ -18,11 +21,9 @@ EventLoop::EventLoop(Config &config)
       epollPoller_(config.max_events),
       connectionManager_(&epollPoller_, config.recv_buffer_size),
       running_(true),
-      epoll_timeout_ms_(config.epoll_timeout_ms)
-{
+      epoll_timeout_ms_(config.epoll_timeout_ms) {
     signal(SIGPIPE, SIG_IGN);
-    if(wakeup_fd_==-1)
-    {
+    if (wakeup_fd_ == -1) {
         throw std::runtime_error("eventfd failed");
     }
     epollPoller_.add_fd(socketListener_.fd());
@@ -33,153 +34,111 @@ EventLoop::EventLoop(Config &config)
     LOG_INFO("TCP server initialized");
 }
 
-EventLoop::~EventLoop()
-{
-    if(wakeup_fd_!=-1)
-    {
+EventLoop::~EventLoop() {
+    if (wakeup_fd_ != -1) {
         close(wakeup_fd_);
     }
 }
 
-    // 有新客户端连接
-    void EventLoop::accept_new_connection()
-    {
-        
-        while(true)
-        {
+// 有新客户端连接
+void EventLoop::accept_new_connection() {
+    while (true) {
+        int client_fd = socketListener_.accept();
 
-            int client_fd = socketListener_.accept();
-
-            if (client_fd == -1)
-            {
-                break;
-            }
-           
-
-            connectionManager_.add_connection(client_fd);
-
-            Connection *client = connectionManager_.get_connection(client_fd);
-            if (decoder_)
-            {
-                client->setDecoder(decoder_->clone());
-            }
-
-            client->setMessageCallback(message_callback_);
-            
-            client->setCloseCallback(
-                [this](int fd)
-                {
-                    connectionManager_.delete_connection(fd);
-                });
-            client->setWriteCallbacks(
-                [this, client_fd, client]()
-                {
-                    if(client->enable_write())
-                    {
-                        epollPoller_.modify_fd(client_fd, client->events());
-
-                    }
-                },
-                [this, client_fd, client]()
-                {
-                    if(client->disable_write())
-                    {
-                        epollPoller_.modify_fd(client_fd, client->events());
-                    }
-                });
+        if (client_fd == -1) {
+            break;
         }
-       
-       
+
+        connectionManager_.add_connection(client_fd);
+
+        Connection *client = connectionManager_.get_connection(client_fd);
+        if (decoder_) {
+            client->setDecoder(decoder_->clone());
+        }
+
+        client->setMessageCallback(message_callback_);
+
+        client->setCloseCallback([this](int fd) { connectionManager_.delete_connection(fd); });
+        client->setWriteCallbacks(
+            [this, client_fd, client]() {
+                if (client->enable_write()) {
+                    epollPoller_.modify_fd(client_fd, client->events());
+                }
+            },
+            [this, client_fd, client]() {
+                if (client->disable_write()) {
+                    epollPoller_.modify_fd(client_fd, client->events());
+                }
+            });
+    }
+}
+
+//处理客户端
+
+void EventLoop::handle_client_event(int fd) {
+    Connection *client = connectionManager_.get_connection(fd);
+
+    if (client == nullptr)
+        return;
+
+    IOEvent event = client->recv_data();
+
+    if (event == IOEvent::CLOSE || event == IOEvent::ERROR) {
+        return;
     }
 
-    //处理客户端
-
-    void EventLoop::handle_client_event(int fd)
-    {
-        Connection *client = connectionManager_.get_connection(fd);
-
-        if (client == nullptr)
-            return;
-
-        IOEvent event = client->recv_data();
-
-        if (event==IOEvent::CLOSE || event==IOEvent::ERROR)
-        {
-            return;
-        }
-
-        if(event==IOEvent::DATA)
-        {
-            client->send_data();
-        }
+    if (event == IOEvent::DATA) {
+        client->send_data();
     }
+}
 
-void EventLoop::run()
-{
+void EventLoop::run() {
     loop_thread_id_ = std::this_thread::get_id();
 
-    while (running_)
-    {
+    while (running_) {
         int n = epollPoller_.wait(epoll_timeout_ms_);
 
-      
-        if (n == -1)
-        {
+        if (n == -1) {
             perror("epoll_wait");
             continue;
-        }
-        else if (n == 0)
-        {
-            
+        } else if (n == 0) {
             continue;
         }
 
         auto events = get_events(n);
 
-        for(auto &event:events)
-        {
-            
-            if(event.type==EventType::NEW_CONNECTION)
-            {
+        for (auto &event : events) {
+            if (event.type == EventType::NEW_CONNECTION) {
                 accept_new_connection();
             }
 
-            else if(event.type==EventType::READ)
-            {
-               
+            else if (event.type == EventType::READ) {
                 handle_client_event(event.fd);
             }
 
-            else if(event.type==EventType::TIMER)
-            {
+            else if (event.type == EventType::TIMER) {
                 timer_queue_.handleRead();
             }
 
-            else if(event.type==EventType::WRITE)
-            {
+            else if (event.type == EventType::WRITE) {
                 Connection *client = connectionManager_.get_connection(event.fd);
-                
-                if(client==nullptr)
+
+                if (client == nullptr)
                     continue;
 
                 client->send_data();
 
             }
 
-            else if(event.type==EventType::WAKEUP)
-            {
+            else if (event.type == EventType::WAKEUP) {
                 uint64_t value;
-                ssize_t n =read(wakeup_fd_, &value, sizeof(value));
+                ssize_t n = read(wakeup_fd_, &value, sizeof(value));
 
-                if (n == -1)
-                {
-                    if (errno != EAGAIN && errno != EWOULDBLOCK)
-                    {
+                if (n == -1) {
+                    if (errno != EAGAIN && errno != EWOULDBLOCK) {
                         perror("read eventfd");
                     }
                 }
-
-                
             }
         }
         std::vector<std::function<void()>> local_tasks;
@@ -188,48 +147,36 @@ void EventLoop::run()
             local_tasks.swap(tasks_);
         }
 
-        for (auto &task : local_tasks)
-        {
+        for (auto &task : local_tasks) {
             task();
         }
     }
 }
 
-
-
-std::vector<Event> EventLoop:: get_events(int n)
-{
+std::vector<Event> EventLoop::get_events(int n) {
     std::vector<Event> events;
     const auto &ready_events = epollPoller_.get_ready_events();
 
-    for (int i = 0; i < n;i++)
-    {
+    for (int i = 0; i < n; i++) {
         int fd = ready_events[i].data.fd;
         uint32_t revents = ready_events[i].events;
 
-        if (fd == socketListener_.fd())
-        {
+        if (fd == socketListener_.fd()) {
             events.emplace_back(fd, EventType::NEW_CONNECTION);
         }
 
-        else if(fd==timer_queue_.getTimerFd())
-        {
+        else if (fd == timer_queue_.getTimerFd()) {
             events.emplace_back(fd, EventType::TIMER);
         }
 
-        else if(fd==wakeup_fd_)
-        {
+        else if (fd == wakeup_fd_) {
             events.emplace_back(fd, EventType::WAKEUP);
-        }
-        else
-        {
-            if(revents&EPOLLIN)
-            {
+        } else {
+            if (revents & EPOLLIN) {
                 events.emplace_back(fd, EventType::READ);
             }
 
-            if (revents & EPOLLOUT)
-            {
+            if (revents & EPOLLOUT) {
                 events.emplace_back(fd, EventType::WRITE);
             }
         }
@@ -237,116 +184,88 @@ std::vector<Event> EventLoop:: get_events(int n)
     return events;
 }
 
-void EventLoop:: set_message_callback(ClientMessageCallback callback)
-{
+void EventLoop::set_message_callback(ClientMessageCallback callback) {
     message_callback_ = callback;
 }
 
-TimerQueue::TimerId EventLoop::runAt(
-    std::chrono::steady_clock::time_point when,
-    TimerQueue::TimerCallback cb)
-{
-    return timer_queue_.addTimer(
-        std::move(cb),
-        when,
-        std::chrono::milliseconds(0));
+TimerQueue::TimerId EventLoop::runAt(std::chrono::steady_clock::time_point when,
+                                     TimerQueue::TimerCallback cb) {
+    return timer_queue_.addTimer(std::move(cb), when, std::chrono::milliseconds(0));
 }
 
-TimerQueue::TimerId EventLoop::runAfter(std::chrono::milliseconds delay, TimerQueue::TimerCallback cb)
-{
-   return  runAt(std::chrono::steady_clock::now() + delay, std::move(cb));
+TimerQueue::TimerId EventLoop::runAfter(std::chrono::milliseconds delay,
+                                        TimerQueue::TimerCallback cb) {
+    return runAt(std::chrono::steady_clock::now() + delay, std::move(cb));
 }
 
-TimerQueue::TimerId EventLoop::runEvery(std::chrono::milliseconds interval, TimerQueue::TimerCallback cb)
-{
-   return timer_queue_.addTimer(std::move(cb), std::chrono::steady_clock::now() + interval, interval);
+TimerQueue::TimerId EventLoop::runEvery(std::chrono::milliseconds interval,
+                                        TimerQueue::TimerCallback cb) {
+    return timer_queue_.addTimer(std::move(cb), std::chrono::steady_clock::now() + interval,
+                                 interval);
 }
 
-void EventLoop::startIdleTimeout()
-{
-    runEvery(
-        std::chrono::seconds(5),
-        [this]()
-        {
-            auto now = std::chrono::steady_clock::now();
-            auto timeout = std::chrono::seconds(60);
+void EventLoop::startIdleTimeout() {
+    runEvery(std::chrono::seconds(5), [this]() {
+        auto now = std::chrono::steady_clock::now();
+        auto timeout = std::chrono::seconds(60);
 
-            std::vector<int> expired_fds;
+        std::vector<int> expired_fds;
 
-            connectionManager_.forEachConn(
-                [&](Connection *conn)
-                {
-                    if(now-conn->getLastActiveTime()>timeout)
-                    {
-                        LOG_INFO(
-                            "[IdleTimeout] fd:%d idle timeout, close",
-                            conn->fd());
+        connectionManager_.forEachConn([&](Connection *conn) {
+            if (now - conn->getLastActiveTime() > timeout) {
+                LOG_INFO("[IdleTimeout] fd:%d idle timeout, close", conn->fd());
 
-                        expired_fds.push_back(conn->fd());
-                    }
-                });
-            
-            for(int fd:expired_fds)
-            {
-                connectionManager_.delete_connection(fd);
-
+                expired_fds.push_back(conn->fd());
             }
         });
+
+        for (int fd : expired_fds) {
+            connectionManager_.delete_connection(fd);
+        }
+    });
 }
 
-void  EventLoop:: queueInLoop(std::function<void()> cb)
-{
+void EventLoop::queueInLoop(std::function<void()> cb) {
     {
         std::lock_guard<std::mutex> lock(mutex_);
         tasks_.push_back(std::move(cb));
     }
 
     uint64_t cnt = 1;
-    ssize_t n=write(wakeup_fd_, &cnt, sizeof(cnt));
+    ssize_t n = write(wakeup_fd_, &cnt, sizeof(cnt));
 
-    if (n == -1)
-    {
-        if (errno != EAGAIN && errno != EWOULDBLOCK)
-        {
+    if (n == -1) {
+        if (errno != EAGAIN && errno != EWOULDBLOCK) {
             perror("write eventfd");
         }
     }
 }
 
-void EventLoop::runInLoop(std::function<void()> cb)
-{
-    if (std::this_thread::get_id() == loop_thread_id_)
-    {
+void EventLoop::runInLoop(std::function<void()> cb) {
+    if (std::this_thread::get_id() == loop_thread_id_) {
         cb();
-    }
-    else
-    {
+    } else {
         queueInLoop(std::move(cb));
     }
 }
 
-void EventLoop::stop()
-{
+void EventLoop::stop() {
     running_ = false;
 
     uint64_t value = 1;
     ssize_t n = write(wakeup_fd_, &value, sizeof(value));
 
-    if (n == -1)
-    {
-        if (errno != EAGAIN && errno != EWOULDBLOCK)
-        {
+    if (n == -1) {
+        if (errno != EAGAIN && errno != EWOULDBLOCK) {
             perror("write eventfd");
         }
     }
 }
 
-void EventLoop::setDecoder(std::unique_ptr<FrameDecoder> decoder)
-{
+void EventLoop::setDecoder(std::unique_ptr<FrameDecoder> decoder) {
     decoder_ = std::move(decoder);
 }
 
-void EventLoop::cancelTimer(TimerQueue::TimerId timerId)
-{
+void EventLoop::cancelTimer(TimerQueue::TimerId timerId) {
     timer_queue_.cancel(timerId);
 }

@@ -1,10 +1,9 @@
 #pragma once
 
-#include <vector>
 #include <string>
+#include <vector>
 
-class Buffer
-{
+class Buffer {
 public:
     // 添加数据
     void add_data(const char *data, size_t len);
@@ -19,10 +18,9 @@ public:
     void fetch(size_t len);
 
     //读取read_index后的len个字节
-    const char *peek(ssize_t offset)const;
+    const char *peek(ssize_t offset) const;
 
 private:
     std::vector<char> buffer_;
     size_t read_index_ = 0;
 };
-
