@@ -8,9 +8,31 @@
 SocketListener::SocketListener(const char *ip, int port,int backlog)
 {
     fd_ = socket(AF_INET, SOCK_STREAM, 0);
-    if(fd_==-1)
+
+   
+
+
+    if (fd_ == -1)
     {
         perror("socket");
+        return;
+    }
+
+    int opt = 1;
+
+    if (setsockopt(fd_, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == -1)
+    {
+        perror("setsockopt SO_REUSEADDR");
+        close(fd_);
+        fd_ = -1;
+        return;
+    }
+
+    if (setsockopt(fd_, SOL_SOCKET, SO_REUSEPORT, &opt, sizeof(opt)) == -1)
+    {
+        perror("setsockopt SO_REUSEPORT");
+        close(fd_);
+        fd_ = -1;
         return;
     }
 

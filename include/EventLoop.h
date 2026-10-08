@@ -10,11 +10,13 @@
 #include<vector>
 #include<thread>
 #include "decoder/FrameDecoder.h"
+#include"Config.h"
+#include "SocketListener.h"
 class EventLoop
 {
 public:
     using ClientMessageCallback = std::function<void(Connection &, const std::string &)>;
-    EventLoop(int server_fd, int max_events, int epoll_timeout_ms, int recv_buffer_size);
+    EventLoop(Config& config);
     ~EventLoop();
     void run();
 
@@ -41,7 +43,7 @@ private:
     void startIdleTimeout();
 
 private:
-    int server_fd_;
+    SocketListener socketListener_;
     int wakeup_fd_;
     EpollPoller epollPoller_;
     ConnectionManager connectionManager_;

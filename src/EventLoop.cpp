@@ -11,21 +11,21 @@
 #include"Connection.h"
 #include<sys/eventfd.h>
 #include<csignal>
-EventLoop::EventLoop(int server_fd, int max_events, int epoll_timeout_ms, int recv_buffer_size)
-    : server_fd_(server_fd),
+EventLoop::EventLoop(Config &config)
+    : socketListener_("127.0.0.1",config.port,config.backlog),
       wakeup_fd_(eventfd(0, EFD_NONBLOCK)),
       timer_queue_(this),
-      epollPoller_(max_events),
-      connectionManager_(&epollPoller_, recv_buffer_size),
+      epollPoller_(config.max_events),
+      connectionManager_(&epollPoller_, config.recv_buffer_size),
       running_(true),
-      epoll_timeout_ms_(epoll_timeout_ms)
+      epoll_timeout_ms_(config.epoll_timeout_ms)
 {
     signal(SIGPIPE, SIG_IGN);
     if(wakeup_fd_==-1)
     {
         throw std::runtime_error("eventfd failed");
     }
-    epollPoller_.add_fd(server_fd_);
+    epollPoller_.add_fd(socketListener_.fd());
     epollPoller_.add_fd(wakeup_fd_);
     epollPoller_.add_fd(timer_queue_.getTimerFd());
 
@@ -51,7 +51,7 @@ EventLoop::~EventLoop()
             socklen_t client_len = sizeof(client_addr);
 
             int client_fd = accept(
-                server_fd_, (sockaddr *)&client_addr, &client_len);
+               socketListener_.fd(), (sockaddr *)&client_addr, &client_len);
 
             if (client_fd == -1)
             {
@@ -222,7 +222,7 @@ std::vector<Event> EventLoop:: get_events(int n)
         int fd = ready_events[i].data.fd;
         uint32_t revents = ready_events[i].events;
 
-        if (fd == server_fd_)
+        if (fd == socketListener_.fd())
         {
             events.emplace_back(fd, EventType::NEW_CONNECTION);
         }
