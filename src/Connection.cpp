@@ -104,6 +104,11 @@ Connection::~Connection()
                     continue;
                     
                 perror("send");
+
+                if(close_callback_)
+                {
+                    close_callback_(fd_);
+                }
                 return false;
             }
         }

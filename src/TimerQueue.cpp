@@ -53,7 +53,7 @@
 // 取消定时器
     void  TimerQueue:: cancel(TimerId timerId)
     {
-
+        cancelled_timers_.insert(timerId.sequence);
     }
 
 // 给epoll监听
@@ -81,6 +81,12 @@ void TimerQueue:: handleRead()
     {
         Timer timer = heap_.top();
         heap_.pop();
+
+        if(cancelled_timers_.count(timer.id.sequence))
+        {
+            cancelled_timers_.erase(timer.id.sequence);
+            continue;
+        }
 
         //执行定时任务
         timer.cb();

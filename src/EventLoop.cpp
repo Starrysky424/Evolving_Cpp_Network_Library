@@ -12,7 +12,7 @@
 #include<sys/eventfd.h>
 #include<csignal>
 EventLoop::EventLoop(Config &config)
-    : socketListener_("127.0.0.1",config.port,config.backlog),
+    : socketListener_(config),
       wakeup_fd_(eventfd(0, EFD_NONBLOCK)),
       timer_queue_(this),
       epollPoller_(config.max_events),
@@ -47,29 +47,14 @@ EventLoop::~EventLoop()
         
         while(true)
         {
-            sockaddr_in client_addr{};
-            socklen_t client_len = sizeof(client_addr);
 
-            int client_fd = accept(
-               socketListener_.fd(), (sockaddr *)&client_addr, &client_len);
+            int client_fd = socketListener_.accept();
 
             if (client_fd == -1)
             {
-                if(errno==EAGAIN || errno==EWOULDBLOCK)
-                    break;
-                perror("accept");
                 break;
             }
-            // 设置非阻塞
-            int flags = fcntl(client_fd, F_GETFL, 0);
-
-            if (flags == -1)
-            {
-                close(client_fd);
-                return;
-            }
-
-            fcntl(client_fd, F_SETFL, flags | O_NONBLOCK);
+           
 
             connectionManager_.add_connection(client_fd);
 
@@ -102,7 +87,6 @@ EventLoop::~EventLoop()
                         epollPoller_.modify_fd(client_fd, client->events());
                     }
                 });
-            std::cout << "new client:" << client_fd << std::endl;
         }
        
        
@@ -195,17 +179,18 @@ void EventLoop::run()
                     }
                 }
 
-                std::vector<std::function<void()>> local_tasks;
-                {
-                    std::lock_guard<std::mutex> lock(mutex_);
-                    local_tasks.swap(tasks_);
-                }
-
-                for(auto &task:local_tasks)
-                {
-                    task();
-                }
+                
             }
+        }
+        std::vector<std::function<void()>> local_tasks;
+        {
+            std::lock_guard<std::mutex> lock(mutex_);
+            local_tasks.swap(tasks_);
+        }
+
+        for (auto &task : local_tasks)
+        {
+            task();
         }
     }
 }
@@ -257,12 +242,22 @@ void EventLoop:: set_message_callback(ClientMessageCallback callback)
     message_callback_ = callback;
 }
 
-void EventLoop:: runAfter(std::chrono::milliseconds delay, TimerQueue::TimerCallback cb)
+TimerQueue::TimerId EventLoop::runAt(
+    std::chrono::steady_clock::time_point when,
+    TimerQueue::TimerCallback cb)
 {
-    timer_queue_.addTimer(std::move(cb), std::chrono::steady_clock::now() + delay, std::chrono::milliseconds(0));
+    return timer_queue_.addTimer(
+        std::move(cb),
+        when,
+        std::chrono::milliseconds(0));
 }
 
-void EventLoop:: runEvery(std::chrono::milliseconds interval, TimerQueue::TimerCallback cb)
+TimerQueue::TimerId EventLoop::runAfter(std::chrono::milliseconds delay, TimerQueue::TimerCallback cb)
+{
+    runAt(std::chrono::steady_clock::now() + delay, std::move(cb));
+}
+
+TimerQueue::TimerId EventLoop::runEvery(std::chrono::milliseconds interval, TimerQueue::TimerCallback cb)
 {
     timer_queue_.addTimer(std::move(cb), std::chrono::steady_clock::now() + interval, interval);
 }
@@ -349,4 +344,9 @@ void EventLoop::stop()
 void EventLoop::setDecoder(std::unique_ptr<FrameDecoder> decoder)
 {
     decoder_ = std::move(decoder);
+}
+
+void EventLoop::cancelTimer(TimerQueue::TimerId timerId)
+{
+    timer_queue_.cancel(timerId);
 }

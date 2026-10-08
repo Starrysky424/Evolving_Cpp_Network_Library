@@ -22,9 +22,11 @@ public:
 
     void set_message_callback(ClientMessageCallback callback);
 
-    void runAfter(std::chrono::milliseconds delay, TimerQueue::TimerCallback cb);
+    TimerQueue::TimerId runAt(std::chrono::steady_clock::time_point when, TimerQueue::TimerCallback cb);
 
-    void runEvery(std::chrono::milliseconds interval, TimerQueue::TimerCallback cb);
+    TimerQueue::TimerId runAfter(std::chrono::milliseconds delay, TimerQueue::TimerCallback cb);
+
+    TimerQueue::TimerId runEvery(std::chrono::milliseconds interval, TimerQueue::TimerCallback cb);
 
     void queueInLoop(std::function<void()> cb);
 
@@ -33,6 +35,8 @@ public:
     void stop();
 
     void setDecoder(std::unique_ptr<FrameDecoder> decoder);
+
+    void cancelTimer(TimerQueue::TimerId timerId);
 
 private:
     void accept_new_connection();

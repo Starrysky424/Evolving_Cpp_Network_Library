@@ -1,88 +1,160 @@
 #include"SocketListener.h"
-#include <sys/socket.h>
-#include <netinet/in.h>
 #include <arpa/inet.h>
+#include <fcntl.h>
+#include <sys/socket.h>
 #include <unistd.h>
-#include<iostream>
-#include<fcntl.h>
-SocketListener::SocketListener(const char *ip, int port,int backlog)
+
+#include <cerrno>
+#include <cstring>
+#include <iostream>
+#include <stdexcept>
+SocketListener::SocketListener(Config& config)
+    :fd_(-1)
+{
+    initSocket(config.port, config.backlog);
+}
+
+SocketListener::~SocketListener()
+{
+    close();
+}
+
+int SocketListener::fd()const
+{
+    return fd_;
+}
+
+
+void SocketListener::initSocket(int port,int backlog)
 {
     fd_ = socket(AF_INET, SOCK_STREAM, 0);
 
-   
-
-
-    if (fd_ == -1)
+    if(fd_==-1)
     {
-        perror("socket");
-        return;
+        throw std::runtime_error("socket creation failed");
+
+    }
+
+    int flags = fcntl(fd_, F_GETFL, 0);
+    if (flags==-1)
+    {
+        close();
+        throw std::runtime_error("fcntl F_GETFL failed");
+    }
+
+    if (fcntl(fd_, F_SETFL, flags | O_NONBLOCK) == -1)
+    {
+        close();
+        throw std::runtime_error("fcntl F_SETFL failed");
     }
 
     int opt = 1;
 
     if (setsockopt(fd_, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == -1)
     {
-        perror("setsockopt SO_REUSEADDR");
-        close(fd_);
-        fd_ = -1;
-        return;
+        close();
+         throw std::runtime_error("setsockopt SO_REUSEADDR failed");
     }
 
-    if (setsockopt(fd_, SOL_SOCKET, SO_REUSEPORT, &opt, sizeof(opt)) == -1)
+    if (setsockopt(
+            fd_,
+            SOL_SOCKET,
+            SO_REUSEPORT,
+            &opt,
+            sizeof(opt)) == -1)
     {
-        perror("setsockopt SO_REUSEPORT");
-        close(fd_);
-        fd_ = -1;
-        return;
+        close();
+        throw std::runtime_error("setsockopt SO_REUSEPORT failed");
     }
 
-    //设置监听Socket非阻塞
-    int flags = fcntl(fd_, F_GETFL, 0);
-
-    if(flags==-1)
-    {
-        perror("fcntl");
-        close(fd_);
-        fd_ = -1;
-        return;
-    }
-
-    if(fcntl(fd_,F_SETFL,flags | O_NONBLOCK)==-1)
-    {
-        perror("fcntl");
-        close(fd_);
-        fd_ = -1;
-        return;
-    }
-    
     sockaddr_in server_addr{};
 
     server_addr.sin_family = AF_INET;
-
-    server_addr.sin_addr.s_addr = inet_addr(ip);
-
+    server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
     server_addr.sin_port = htons(port);
 
-    if(bind(fd_,(sockaddr*)&server_addr,sizeof(server_addr))==-1)
+    if (bind(
+            fd_,
+            reinterpret_cast<sockaddr *>(&server_addr),
+            sizeof(server_addr)) == -1)
     {
-        perror("bind");
-        close(fd_);
-        fd_ = -1;
-        return;
+        close();
+        throw std::runtime_error("bind failed");
     }
 
-    if(listen(fd_,backlog)==-1)
+    if (listen(fd_, backlog) == -1)
     {
-        perror("listen");
-        close(fd_);
-        fd_ = -1;
-        return;
+        close();
+        throw std::runtime_error("listen failed");
     }
 
-    std::cout << "server listen on " << ip << ":" << port << std::endl;
+    std::cout
+        << "server listen on 0.0.0.0:"
+        << port
+        << std::endl;
 }
 
-int SocketListener::fd()const
+int SocketListener::accept()
 {
-    return fd_;
+    sockaddr_in client_addr{};
+    socklen_t client_len = sizeof(client_addr);
+
+    int client_fd = ::accept(
+        fd_,
+        reinterpret_cast<sockaddr *>(&client_addr),
+        &client_len);
+
+    if (client_fd == -1)
+    {
+        if (errno == EAGAIN || errno == EWOULDBLOCK)
+        {
+            return -1;
+        }
+
+        throw std::runtime_error(
+            std::string("accept failed: ") +
+            std::strerror(errno));
+    }
+
+    int flags = fcntl(client_fd, F_GETFL, 0);
+
+    if (flags == -1)
+    {
+        ::close(client_fd);
+        throw std::runtime_error("fcntl client fd failed");
+    }
+
+    if (fcntl(client_fd, F_SETFL, flags | O_NONBLOCK) == -1)
+    {
+        ::close(client_fd);
+        throw std::runtime_error("set client fd nonblocking failed");
+    }
+
+    char client_ip[INET_ADDRSTRLEN]{};
+
+    inet_ntop(
+        AF_INET,
+        &client_addr.sin_addr,
+        client_ip,
+        sizeof(client_ip));
+
+    std::cout
+        << "new client:"
+        << client_ip
+        << ":"
+        << ntohs(client_addr.sin_port)
+        << " fd:"
+        << client_fd
+        << std::endl;
+
+    return client_fd;
+}
+
+void SocketListener::close()
+{
+    if (fd_ != -1)
+    {
+        ::close(fd_);
+        fd_ = -1;
+    }
 }

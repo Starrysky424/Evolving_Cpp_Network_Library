@@ -52,7 +52,13 @@ void EpollPoller::modify_fd(int fd, uint32_t events)
 
 void EpollPoller:: remove_fd(int fd)
 {
-    if(epoll_ctl(epoll_fd_,EPOLL_CTL_DEL,fd,nullptr)==-1)
+
+    auto it = fd_events_.find(fd);
+
+    if(it==fd_events_.end())
+        return;
+        
+    if (epoll_ctl(epoll_fd_, EPOLL_CTL_DEL, fd, nullptr) == -1)
     {
         throw std::runtime_error("epoll_ctl delete failed");
     }

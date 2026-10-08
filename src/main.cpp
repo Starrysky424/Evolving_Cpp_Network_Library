@@ -36,11 +36,9 @@ int main(int argc, char **argv)
     signal(SIGTERM, signal_handler);
     signal(SIGPIPE, SIG_IGN);
 
-    SocketListener socketListener("127.0.0.1", config.port,config.backlog);
-
     try
     {
-        unsigned int thread_count = 4;
+        unsigned int thread_count = config.thread_count;
         std::vector<std::unique_ptr<EventLoop>> loops;
         std::vector<std::thread> threads;
 

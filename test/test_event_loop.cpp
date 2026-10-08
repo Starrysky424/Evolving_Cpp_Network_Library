@@ -10,11 +10,12 @@
 
 int main()
 {
-    int sockets[2];
-
-    assert(socketpair(AF_UNIX, SOCK_STREAM, 0, sockets) == 0);
-
-    EventLoop loop(sockets[0],4096,100,4096);
+    
+    Config config;
+    config.max_events = 4096;
+    config.epoll_timeout_ms = 100;
+    config.recv_buffer_size = 4096;
+    EventLoop loop(config);
 
     std::atomic<bool> loop_thread_task_executed{false};
     std::atomic<bool> other_thread_task_executed{false};
@@ -62,7 +63,7 @@ int main()
     // 等待 EventLoop线程退出
     loop_thread.join();
 
-    close(sockets[1]);
+   
 
     std::cout << "EventLoop test finished." << std::endl;
 

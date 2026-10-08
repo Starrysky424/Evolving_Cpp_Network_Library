@@ -4,7 +4,7 @@
 #include <functional>
 #include <queue>
 #include <vector>
-
+#include<unordered_set>
 class EventLoop;
 
 class TimerQueue
@@ -49,6 +49,8 @@ private:
 
         std::chrono::milliseconds interval;
 
+        bool cancelled = false;
+
         bool operator>(const Timer &rhs) const
         {
             return when > rhs.when;
@@ -75,4 +77,6 @@ private:
     TimerHeap heap_;
 
     int64_t seq_counter_;
+
+    std::unordered_set<int64_t> cancelled_timers_;
 };
