@@ -130,7 +130,7 @@ void EventLoop::run()
         }
         else if (n == 0)
         {
-            std::cout << "epoll timeout" << std::endl;
+            
             continue;
         }
 
@@ -254,12 +254,12 @@ TimerQueue::TimerId EventLoop::runAt(
 
 TimerQueue::TimerId EventLoop::runAfter(std::chrono::milliseconds delay, TimerQueue::TimerCallback cb)
 {
-    runAt(std::chrono::steady_clock::now() + delay, std::move(cb));
+   return  runAt(std::chrono::steady_clock::now() + delay, std::move(cb));
 }
 
 TimerQueue::TimerId EventLoop::runEvery(std::chrono::milliseconds interval, TimerQueue::TimerCallback cb)
 {
-    timer_queue_.addTimer(std::move(cb), std::chrono::steady_clock::now() + interval, interval);
+   return timer_queue_.addTimer(std::move(cb), std::chrono::steady_clock::now() + interval, interval);
 }
 
 void EventLoop::startIdleTimeout()

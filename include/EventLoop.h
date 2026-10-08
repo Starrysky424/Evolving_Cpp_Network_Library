@@ -12,6 +12,7 @@
 #include "decoder/FrameDecoder.h"
 #include"Config.h"
 #include "SocketListener.h"
+#include<atomic>
 class EventLoop
 {
 public:
@@ -58,6 +59,6 @@ private:
     std::vector<std::function<void()>> tasks_;
     std::mutex mutex_;
     std::unique_ptr<FrameDecoder> decoder_;
-    bool running_;
+    std::atomic<bool> running_;
     int epoll_timeout_ms_;
 };

@@ -95,7 +95,7 @@ void TimerQueue:: handleRead()
         //判断是否为周期性定时器
         if(timer.interval.count()>0)
         {
-            timer.when = now + timer.interval;
+            timer.when += timer.interval;
             heap_.push(std::move(timer));
         }
 

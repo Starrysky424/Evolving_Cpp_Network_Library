@@ -57,10 +57,13 @@ void EpollPoller:: remove_fd(int fd)
 
     if(it==fd_events_.end())
         return;
-        
+
     if (epoll_ctl(epoll_fd_, EPOLL_CTL_DEL, fd, nullptr) == -1)
     {
-        throw std::runtime_error("epoll_ctl delete failed");
+        if (errno != ENOENT && errno != EBADF)
+        {
+            throw std::runtime_error("epoll_ctl delete failed");
+        }
     }
 
     fd_events_.erase(fd);
