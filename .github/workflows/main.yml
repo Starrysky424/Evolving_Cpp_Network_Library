@@ -41,6 +41,14 @@ jobs:
           ./build/test/test_buffer
           ./build/test/test_decoder
           ./build/test/test_connection_manager
+
+          ./build/main --port 8080 &
+          SERVER_PID=$!
+
+          trap 'kill $SERVER_PID 2>/dev/null || true' EXIT
+
+          sleep 2
+
           ./build/test/test_idle_timeout
           ./build/test/test_event_loop
 
