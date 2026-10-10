@@ -35,9 +35,6 @@ IOEvent Connection::recv_data() {
         else if (len == 0) {
             std::cout << "close client" << std::endl;
 
-            if (close_callback_)
-                close_callback_(fd_);
-
             return IOEvent::CLOSE;
         }
 
@@ -46,8 +43,7 @@ IOEvent Connection::recv_data() {
         }
 
         perror("recv");
-        if (close_callback_)
-            close_callback_(fd_);
+
         return IOEvent::ERROR;
     }
 
@@ -89,10 +85,6 @@ bool Connection::send_data() {
                 continue;
 
             perror("send");
-
-            if (close_callback_) {
-                close_callback_(fd_);
-            }
             return false;
         }
     }

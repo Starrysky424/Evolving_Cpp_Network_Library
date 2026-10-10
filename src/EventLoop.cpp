@@ -58,7 +58,6 @@ void EventLoop::accept_new_connection() {
 
         client->setMessageCallback(message_callback_);
 
-        client->setCloseCallback([this](int fd) { connectionManager_.delete_connection(fd); });
         client->setWriteCallbacks(
             [this, client_fd, client]() {
                 if (client->enable_write()) {
@@ -84,11 +83,15 @@ void EventLoop::handle_client_event(int fd) {
     IOEvent event = client->recv_data();
 
     if (event == IOEvent::CLOSE || event == IOEvent::ERROR) {
+        connectionManager_.delete_connection(fd);
         return;
     }
 
     if (event == IOEvent::DATA) {
-        client->send_data();
+
+        if (!client->send_data()){
+            connectionManager_.delete_connection(fd);
+        }
     }
 }
 
@@ -126,7 +129,9 @@ void EventLoop::run() {
                 if (client == nullptr)
                     continue;
 
-                client->send_data();
+                if (!client->send_data()) {
+                    connectionManager_.delete_connection(event.fd);
+                }
 
             }
 
