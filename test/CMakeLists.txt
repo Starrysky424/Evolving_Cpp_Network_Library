@@ -46,3 +46,14 @@ target_link_libraries(test_event_loop
     network_lib
     pthread
 )
+
+
+
+add_executable(test_connection_half_close
+    test_connection_half_close.cpp
+)
+
+target_link_libraries(test_connection_half_close
+    network_lib
+    pthread
+)

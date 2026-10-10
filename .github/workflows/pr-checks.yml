@@ -59,6 +59,7 @@ jobs:
 
           sleep 2
 
+          ./build/test/test_connection_half_close
           ./build/test/test_idle_timeout
           ./build/test/test_event_loop
 
