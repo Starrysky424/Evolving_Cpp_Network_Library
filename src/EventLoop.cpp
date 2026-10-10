@@ -136,10 +136,12 @@ void EventLoop::run() {
 
                 if (!client->send_data()) {
                     connectionManager_.delete_connection(event.fd);
+                    continue;
                 }
 
                 if (client->peer_close() && client->output_buffer().read_able_bytes() == 0) {
                     connectionManager_.delete_connection(event.fd);
+                    continue;
                 }
             }
 
