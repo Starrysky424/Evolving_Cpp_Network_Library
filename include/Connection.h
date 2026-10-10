@@ -51,6 +51,8 @@ public:
 
     void setDecoder(std::unique_ptr<FrameDecoder> decoder);
 
+    bool peer_close() const;
+
 private:
     int fd_;
     Buffer input_buffer_;
@@ -63,4 +65,6 @@ private:
     int recv_buffer_size_;
     std::function<void()> enable_write_callback_;
     std::function<void()> disable_write_callback_;
+
+    bool peer_close_{false};
 };

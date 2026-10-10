@@ -42,18 +42,21 @@ int main(int argc, char **argv) {
 
             loop->setDecoder(std::make_unique<DelimiterDecoder>("\r\n\r\n"));
 
-            loop->set_message_callback([](Connection &connection, const std::string &message) {
-                if (message.find("HTTP/") == std::string::npos) {
-                    return;
-                }
+            loop->set_message_callback([](Connection& connection, const std::string& message) {
+                std::string response;
 
-                const std::string response =
-                    "HTTP/1.1 200 OK\r\n"
-                    "Content-Type: text/plain\r\n"
-                    "Content-Length: 12\r\n"
-                    "Connection: keep-alive\r\n"
-                    "\r\n"
-                    "hello,world\n";
+                if (message.find("HTTP/") != std::string::npos) {
+                    response =
+                        "HTTP/1.1 200 OK\r\n"
+                        "Content-Type: text/plain\r\n"
+                        "Content-Length: 12\r\n"
+                        "Connection: keep-alive\r\n"
+                        "\r\n"
+                        "hello,world\n";
+                } else {
+                    // 普通 TCP 消息：原样回显
+                    response = message;
+                }
 
                 connection.output_buffer().add_data(response.data(), response.size());
             });

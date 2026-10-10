@@ -33,9 +33,9 @@ IOEvent Connection::recv_data() {
         }
 
         else if (len == 0) {
-            std::cout << "close client" << std::endl;
+            peer_close_ = true;
 
-            return IOEvent::CLOSE;
+            break;
         }
 
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
@@ -60,7 +60,7 @@ IOEvent Connection::recv_data() {
         return IOEvent::DATA;
     }
 
-    return IOEvent::NONE;
+    return peer_close_ ? IOEvent::CLOSE : IOEvent::NONE;
 }
 
 bool Connection::send_data() {
@@ -161,4 +161,9 @@ void Connection::setWriteCallbacks(std::function<void()> enable, std::function<v
 void Connection::setDecoder(std::unique_ptr<FrameDecoder> decoder) {
     decoder_ = std::move(decoder);
 }
+
+bool Connection::peer_close() const {
+    return peer_close_;
+}
+
 // 此类的核心思想是将一个客户端连接对应的fd，recv，send，以及连接该数据的Buffer封装到一起，一个Connection就表示一个客户端连接

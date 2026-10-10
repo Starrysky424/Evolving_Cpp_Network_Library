@@ -91,6 +91,11 @@ void EventLoop::handle_client_event(int fd) {
 
         if (!client->send_data()){
             connectionManager_.delete_connection(fd);
+            return;
+        }
+        // 对端已经关闭发送方向，且响应已全部发送
+        if (client->peer_close() && client->output_buffer().read_able_bytes() == 0) {
+            connectionManager_.delete_connection(fd);
         }
     }
 }
@@ -133,6 +138,9 @@ void EventLoop::run() {
                     connectionManager_.delete_connection(event.fd);
                 }
 
+                if (client->peer_close() && client->output_buffer().read_able_bytes() == 0) {
+                    connectionManager_.delete_connection(event.fd);
+                }
             }
 
             else if (event.type == EventType::WAKEUP) {
