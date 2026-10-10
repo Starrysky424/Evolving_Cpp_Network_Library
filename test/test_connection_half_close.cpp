@@ -9,7 +9,7 @@
 #include <iostream>
 #include <string>
 
-    int main() {
+int main() {
     int sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd == -1) {
         perror("socket");
