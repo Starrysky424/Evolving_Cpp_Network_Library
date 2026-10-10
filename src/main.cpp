@@ -42,7 +42,7 @@ int main(int argc, char **argv) {
 
             loop->setDecoder(std::make_unique<DelimiterDecoder>("\r\n\r\n"));
 
-            loop->set_message_callback([](Connection& connection, const std::string& message) {
+            loop->set_message_callback([](Connection &connection, const std::string &message) {
                 std::string response;
 
                 if (message.find("HTTP/") != std::string::npos) {

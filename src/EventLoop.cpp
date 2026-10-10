@@ -88,8 +88,7 @@ void EventLoop::handle_client_event(int fd) {
     }
 
     if (event == IOEvent::DATA) {
-
-        if (!client->send_data()){
+        if (!client->send_data()) {
             connectionManager_.delete_connection(fd);
             return;
         }
